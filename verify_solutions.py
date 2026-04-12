@@ -1,5 +1,14 @@
+"""
+Based on the Bloxorz solver by tkoz0:
+https://github.com/tkoz0/bloxorz-solver
+
+Original project finds optimal (minimum-move) solutions to Bloxorz levels using
+a search algorithm and outputs the move sequence. Credit to the original author.
+"""
+
 from pathlib import Path
-from engine.state import load_level, initial_game_state
+
+from engine.state import initial_game_state, load_level
 from engine.validator import apply_move
 from models import Direction, Status
 
