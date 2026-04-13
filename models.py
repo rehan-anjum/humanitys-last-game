@@ -140,6 +140,9 @@ class Attempt:
     history: list[Move] = field(default_factory=list)
     # OK means in-progress; set to LOSS or WIN when the attempt ends
     status: Status = Status.OK
+    # True when the attempt was terminated by dead-state detection rather
+    # than a normal LOSS move.  Surfaced as [DEAD] vs [LOSS] in agent context.
+    dead: bool = False
 
 
 @dataclass

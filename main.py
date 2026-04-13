@@ -9,6 +9,7 @@ from pathlib import Path
 
 from engine.state import load_level, initial_game_state
 from engine.validator import apply_move
+from engine.solver import build_dead_cache, state_key as _dead_key
 from models import Attempt, Move, SessionContext, Status
 from agent_logger import AgentLogger, describe_state
 
@@ -77,12 +78,17 @@ def run(
             temperature=float(os.environ.get("MGW_TEMPERATURE", "0.0")),
         )]
 
+    # Precompute dead states once for all requested levels.
+    # Each worker gets a reference to the same dict — reads only, no locking needed.
+    _lvs = {f"level{lid}": load_level(LEVEL_DIR / f"level{lid}.txt") for lid in level_ids}
+    dead_cache = build_dead_cache(_lvs)
+
     tasks = [(cfg, lid) for cfg in model_configs for lid in level_ids]
     results: dict = {}
 
     with ThreadPoolExecutor(max_workers=min(len(tasks), MAX_PARALLEL_WORKERS)) as pool:
         future_to_task = {
-            pool.submit(_run_one, cfg, lid, get_next_move, get_attempt_plan, resume): (cfg, lid)
+            pool.submit(_run_one, cfg, lid, get_next_move, get_attempt_plan, resume, dead_cache): (cfg, lid)
             for cfg, lid in tasks
         }
         for future in as_completed(future_to_task):
@@ -117,10 +123,13 @@ def run_sequence(
             temperature=float(os.environ.get("MGW_TEMPERATURE", "0.0")),
         )]
 
+    _lvs = {f"level{lid}": load_level(LEVEL_DIR / f"level{lid}.txt") for lid in level_ids}
+    dead_cache = build_dead_cache(_lvs)
+
     results: dict = {}
     for cfg in model_configs:
         cfg_results = _run_sequence_for_model(
-            cfg, level_ids, get_next_move, get_attempt_plan, resume
+            cfg, level_ids, get_next_move, get_attempt_plan, resume, dead_cache
         )
         results[cfg.model_tag] = cfg_results
 
@@ -133,6 +142,7 @@ def _run_sequence_for_model(
     get_next_move_fn,
     get_attempt_plan_fn,
     resume: bool,
+    dead_cache: dict,
 ) -> dict:
     level_history: list[dict] = []
     results: dict = {}
@@ -164,12 +174,12 @@ def _run_sequence_for_model(
             plan_fn = partial(get_attempt_plan_fn, model_id=cfg.model_id,
                               reasoning_effort=cfg.reasoning_effort,
                               temperature=cfg.temperature)
-            _run_level_one_shot(session, plan_fn, logger)
+            _run_level_one_shot(session, plan_fn, logger, dead_cache=dead_cache)
         else:
             move_fn = partial(get_next_move_fn, model_id=cfg.model_id,
                               reasoning_effort=cfg.reasoning_effort,
                               temperature=cfg.temperature)
-            _run_level(session, move_fn, logger)
+            _run_level(session, move_fn, logger, dead_cache=dead_cache)
 
         level_duration = time.monotonic() - level_t0
         won = session.completed_attempts[-1].status == Status.WIN
@@ -231,6 +241,7 @@ def _run_one(
     get_next_move_fn,
     get_attempt_plan_fn,
     resume: bool,
+    dead_cache: dict,
 ) -> dict:
     level_key = f"level{level_id}"
 
@@ -253,12 +264,12 @@ def _run_one(
         plan_fn = partial(get_attempt_plan_fn, model_id=cfg.model_id,
                           reasoning_effort=cfg.reasoning_effort,
                           temperature=cfg.temperature)
-        _run_level_one_shot(session, plan_fn, logger)
+        _run_level_one_shot(session, plan_fn, logger, dead_cache=dead_cache)
     else:
         move_fn = partial(get_next_move_fn, model_id=cfg.model_id,
                           reasoning_effort=cfg.reasoning_effort,
                           temperature=cfg.temperature)
-        _run_level(session, move_fn, logger)
+        _run_level(session, move_fn, logger, dead_cache=dead_cache)
 
     level_duration = time.monotonic() - level_t0
     won = session.completed_attempts[-1].status == Status.WIN
@@ -298,7 +309,13 @@ def _run_one(
 # Turn-by-turn level driver
 # ---------------------------------------------------------------------------
 
-def _run_level(session: SessionContext, move_fn, logger: AgentLogger) -> None:
+def _run_level(
+    session: SessionContext,
+    move_fn,
+    logger: AgentLogger,
+    *,
+    dead_cache: dict | None = None,
+) -> None:
     level = session.level
 
     while True:
@@ -373,6 +390,21 @@ def _run_level(session: SessionContext, move_fn, logger: AgentLogger) -> None:
                 attempt.status = Status.LOSS
                 break
 
+            # Dead-state check: O(1) frozenset lookup
+            if dead_cache:
+                sk = _dead_key(result.next_state)
+                if sk in dead_cache.get(level.level_id, frozenset()):
+                    logger.dead_state(
+                        level_id=level.level_id,
+                        attempt_num=attempt.attempt_num,
+                        turn_num=turn_num,
+                        state_desc=state_after,
+                        toggle_states=dict(result.next_state.toggle_states),
+                    )
+                    attempt.dead   = True
+                    attempt.status = Status.LOSS
+                    break
+
         if attempt.status == Status.OK:
             attempt.status = Status.LOSS
 
@@ -392,7 +424,13 @@ def _run_level(session: SessionContext, move_fn, logger: AgentLogger) -> None:
 # One-shot level driver
 # ---------------------------------------------------------------------------
 
-def _run_level_one_shot(session: SessionContext, plan_fn, logger: AgentLogger) -> None:
+def _run_level_one_shot(
+    session: SessionContext,
+    plan_fn,
+    logger: AgentLogger,
+    *,
+    dead_cache: dict | None = None,
+) -> None:
     level = session.level
 
     while True:
@@ -480,6 +518,21 @@ def _run_level_one_shot(session: SessionContext, plan_fn, logger: AgentLogger) -
             if result.status == Status.LOSS:
                 attempt.status = Status.LOSS
                 break
+
+            # Dead-state check: O(1) frozenset lookup
+            if dead_cache:
+                sk = _dead_key(result.next_state)
+                if sk in dead_cache.get(level.level_id, frozenset()):
+                    logger.dead_state(
+                        level_id=level.level_id,
+                        attempt_num=attempt.attempt_num,
+                        turn_num=turn_num,
+                        state_desc=state_after,
+                        toggle_states=dict(result.next_state.toggle_states),
+                    )
+                    attempt.dead   = True
+                    attempt.status = Status.LOSS
+                    break
 
         if attempt.status == Status.OK:
             attempt.status = Status.LOSS
