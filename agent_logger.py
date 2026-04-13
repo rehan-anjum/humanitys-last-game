@@ -269,6 +269,32 @@ class AgentLogger:
         self._p(f"           └─────────────────────────────────────────────────")
 
     # ------------------------------------------------------------------
+    # Dead state event — solver proved WIN is unreachable from this state
+    # ------------------------------------------------------------------
+
+    def dead_state(
+        self,
+        *,
+        level_id: str,
+        attempt_num: int,
+        turn_num: int,
+        state_desc: str,
+        toggle_states: dict,
+    ) -> None:
+        self._emit(
+            "dead_state",
+            level_id=level_id,
+            attempt_num=attempt_num,
+            turn_num=turn_num,
+            state=state_desc,
+            toggle_states=toggle_states,
+        )
+        self._p(
+            f"  DEAD  [ATT {attempt_num} | TURN {turn_num:3d}] "
+            f"{state_desc}  toggles={toggle_states}"
+        )
+
+    # ------------------------------------------------------------------
     # Error event — logged when an API call or parse fails mid-attempt
     # ------------------------------------------------------------------
 

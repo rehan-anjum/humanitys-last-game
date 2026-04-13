@@ -180,6 +180,27 @@ LOSS — any of the following after the move resolves:
 Lying flat (LYING_V or LYING_H) on a weak tile does NOT cause LOSS.
 </win_loss_conditions>
 
+<dead_states>
+A DEAD state is distinct from a LOSS:
+
+  LOSS — the last move placed the block on an invalid cell (off the board,
+         missing tile, closed bridge, or upright on a weak tile).  The move
+         itself was illegal.  A different move from the same position would
+         have been fine.
+
+  DEAD — the last move was completely legal; the block is on a valid cell.
+         However, exhaustive analysis proves that no sequence of moves from
+         this position can ever reach WIN.  The game is unwinnable.  The
+         typical cause is activating switches in the wrong order, permanently
+         closing a bridge that is required to reach the end tile, with no way
+         to reopen it.
+
+When <previous_attempts> shows [DEAD], the critical error was NOT the final
+move — it was an earlier move in that attempt, the one that activated the
+wrong switch or closed the wrong bridge.  Identify that earlier branch point
+and plan a different order of switch activations.
+</dead_states>
+
 <special_tile_rules>
 
 <switches>
@@ -687,9 +708,10 @@ def _build_user_message(
         if session.completed_attempts:
             all_lines: list[str] = []
             for prev in session.completed_attempts:
+                outcome = "DEAD" if prev.dead else prev.status.value
                 all_lines.append(
                     f"  attempt {prev.attempt_num} "
-                    f"[{prev.status.value} after {len(prev.history)} moves]:"
+                    f"[{outcome} after {len(prev.history)} moves]:"
                 )
                 # Track bridge toggle state through the attempt so we can
                 # show diffs; start from the level's initial open/closed state.
@@ -713,8 +735,9 @@ def _build_user_message(
                             )
                     prev_toggle = dict(res.toggle_states)
 
-                    toggle_str = f"  (bridges: {', '.join(toggle_diffs)})" if toggle_diffs else ""
-                    status_str = f"  [{prev.status.value}]" if is_terminal else ""
+                    toggle_str  = f"  (bridges: {', '.join(toggle_diffs)})" if toggle_diffs else ""
+                    terminal_tag = ("DEAD" if prev.dead else prev.status.value) if is_terminal else ""
+                    status_str   = f"  [{terminal_tag}]" if terminal_tag else ""
 
                     all_lines.append(
                         f"    {idx + 1}: {move.direction.value}  ->  "
