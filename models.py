@@ -148,3 +148,12 @@ class SessionContext:
     initial_state: GameState
     completed_attempts: list[Attempt] = field(default_factory=list)
     current_attempt: Attempt = field(default_factory=lambda: Attempt(attempt_num=1))
+    # Accumulated multi-turn message history for the current attempt.
+    # Reset to [] at the start of each attempt.  Enables prefix caching on
+    # models that support it (OpenAI automatic; Claude requires cache_control
+    # which the gateway proto does not yet expose).
+    conversation_history: list[dict] = field(default_factory=list)
+    # Cross-level context injected in sequence mode.  Each entry:
+    # {"level_id": str, "result": "WIN"|"GAVE_UP",
+    #  "attempts": [{"attempt_num": int, "status": str, "moves": [str, ...]}]}
+    level_history: list[dict] = field(default_factory=list)
