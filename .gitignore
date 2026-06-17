@@ -1,2 +1,28 @@
 __pycache__/
 .DS_Store
+*.egg-info/
+*.pyc
+.venv/
+venv/
+build/
+dist/
+
+# ARC docs templates downloaded for adaptation reference only.
+# Not redistributed; regenerate with `python scripts/scrape_arc_templates.py`.
+docs/_templates/
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.synctex.gz
+paper/sections/*.aux
+paper/main.pdf
+
+# Mintlify local preview cache
+docs/.mintlify/
+docs/.next/
+node_modules/
