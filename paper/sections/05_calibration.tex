@@ -1,0 +1,45 @@
+\section{Human calibration and solvability}
+\label{sec:calibration}
+
+We disclose openly that v0.1 of HLG ships without controlled human-trial data. As
+described in Section~\ref{sec:scoring-design}, the v0.1 baseline $h_l$ is taken to be
+$L_l$, the optimal solution length verified by \texttt{verify\_solutions.py}. This
+introduces two systematic biases that we believe should be visible to readers and
+correctable in future versions.
+
+\paragraph{$h_l = L_l$ overstates human efficiency.} Real first-contact human players
+are expected to take materially more than $L_l$ actions on hard levels because they
+must spend actions exploring the environment before committing to a plan. ARC-AGI-3
+reports an optimal-vs-best-first-run gap that is roughly 2--5$\times$ on most levels
+\cite{arcagi3}. We therefore expect frontier-model HLG-RHAE scores under v0.1 to be
+\emph{lower} than they will appear under v0.2 with real human baselines.
+
+\paragraph{Optimal solutions are pinned to a single trajectory.} The reference solutions
+in \texttt{verify\_solutions.py} are not necessarily unique. For levels with multiple
+optimal trajectories we use the first one found by the breadth-first solver. This is
+consequence-free for the metric (the move count is what matters), but downstream
+analyses that examine \emph{which} actions the agent takes should not assume the
+reference solution is the only optimal choice.
+
+\subsection{Planned testing protocol for v0.2}
+
+We plan to run a small-scale Prolific study with the following protocol, modeled on the
+ARC-AGI-3 testing protocol:
+
+\begin{itemize}[leftmargin=1.5em]
+    \item 10 participants per level. Each participant is exposed to each level for the
+      first time.
+    \item No level-specific instruction. The system prompt that LLMs receive is
+      summarized into a one-page interactive tutorial covering only the rules.
+    \item Soft cutoff of 20 minutes per level; hard cutoff of 30 minutes.
+    \item Participants may reset a level but cannot revisit a previously completed
+      level.
+    \item The human baseline $h_l$ is defined as the upper-median of the action counts
+      among completers on level $l$.
+\end{itemize}
+
+\subsection{Initial level-difficulty signal}
+
+In the absence of human data we use $L_l$ as the difficulty signal. Across the 34
+levels, $L_l \in [7, 113]$ with median 35 and the curve is approximately monotone in
+level index past the tutorial (level 0).

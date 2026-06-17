@@ -1,0 +1,18 @@
+\begin{table}[h]
+\centering
+\caption{HLG dataset composition. Tutorial level 0 is excluded from official scoring.
+Optimal lengths $L_l$ are taken from \texttt{verify\_solutions.py}.}
+\label{tab:dataset}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Subset} & \textbf{Levels} & \textbf{$N$} & \textbf{$L_l$ range} & \textbf{Notes} \\
+\midrule
+Tutorial      & 0          & 1  & --            & No mechanics; single open arena. \\
+Public Demo   & 1--9       & 9  & 7--34         & No switches before level 8. \\
+Semi-Private  & 10--24     & 15 & 33--82        & Used for the official leaderboard. \\
+Fully-Private & 25--33     & 9  & 51--128       & Reserved for the HLG Challenge. \\
+\midrule
+Total         &            & 34 & 7--128        & \\
+\bottomrule
+\end{tabular}
+\end{table}

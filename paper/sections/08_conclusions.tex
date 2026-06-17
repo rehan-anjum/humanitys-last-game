@@ -1,0 +1,31 @@
+\section{Conclusions}
+\label{sec:conclusions}
+
+HLG provides a small, fully-verifiable agentic benchmark that exercises long-horizon
+planning, irreversible side-effect modeling, and dead-end avoidance on a discrete
+spatial domain that frontier LLMs have not been heavily trained on. The benchmark is
+deliberately compact (34 levels, ~150 lines of public Python SDK, one engine module per
+concern), to make it tractable for independent re-implementation and to keep the
+evaluation cost low enough to run as a regression test on every new model release.
+
+Three open problems stand out:
+
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Dead-state reasoning.} Models do not yet appear to distinguish
+      \texttt{[LOSS]} from \texttt{[DEAD]} in their reasoning chains. Eliciting that
+      distinction may require explicit backward-reachability heuristics in the system
+      prompt, or training signals that reward identifying the earlier branch point in a
+      dead-attempt trajectory.
+    \item \textbf{Weak-tile orientation reasoning.} The interaction between block
+      orientation and tile fragility is conceptually simple but operationally subtle;
+      it is a microcosm of physical-affordance reasoning, and current models struggle
+      with it.
+    \item \textbf{Split-mode merge planning.} Split mode requires planning over two
+      independently controlled bodies that must be reunited; the merge condition
+      depends on adjacency at the time of merge. This is the closest HLG approximation
+      to multi-agent coordination over shared state.
+\end{itemize}
+
+We anticipate v0.2 of HLG will add controlled human trials, a public REST surface
+implementing \texttt{hlg-openapi.yaml}, provider adapters under \texttt{hlg.providers},
+and an expanded private level set.

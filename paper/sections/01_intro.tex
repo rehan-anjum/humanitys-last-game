@@ -1,0 +1,60 @@
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{The Bloxorz lineage}
+\label{sec:lineage}
+
+Bloxorz is a flash puzzle game released in 2007 by Damien Clarke. The player rolls a
+1$\times$1$\times$2 block over a 2D grid, dropping it upright into a target hole. Despite
+the trivial action set (\emph{up}, \emph{down}, \emph{left}, \emph{right}), Bloxorz's
+mechanics admit dramatically non-trivial reasoning: the block's orientation determines
+which tiles it occupies, which switches it activates, and whether it falls through weak
+tiles. Optimal solutions on later levels exceed 100 moves and require navigating
+irreversible side-effects of switch activations.
+
+Our levels are sourced from grahambarrgraham's open-source Bloxorz repository
+\cite{grahambarrgrahambloxorz}, and our verifier is a re-implementation of tkoz0's
+breadth-first search solver \cite{tkoz0bloxorzsolver}. We add three things: a precise
+operational semantics for the engine, an LLM evaluation harness, and a precomputed
+\emph{dead-state cache} that lets the harness distinguish provably unwinnable states from
+mere losses.
+
+\subsection{Predictive power of agentic benchmarks}
+\label{sec:predictive}
+
+Static benchmarks have repeatedly been saturated by scaling pretraining and reasoning
+training data. ARC-AGI-1 \cite{arcagi1onmeasure} and ARC-AGI-2 \cite{arcagi2} resisted
+direct memorization for years before frontier reasoning models began to make material
+progress. ARC-AGI-3 \cite{arcagi3} pivots to interactive, turn-based environments where
+information must be actively obtained.
+
+HLG sits in the same family as ARC-AGI-3, but adds two mechanisms not exercised by ARC's
+environments: \emph{persistent irreversible side-effects} (closing a required bridge) and
+\emph{exact-state dead-end detection} via backward reachability analysis on the
+state graph.
+
+\subsection{Known limits of LRM fluid intelligence}
+\label{sec:limits}
+
+Modern Large Reasoning Models (LRMs) appear to acquire strong domain-specific reasoning
+without acquiring corresponding general planning ability. They do well in domains where
+training data densely samples the task space and where verifiable correctness signals
+exist; they do poorly in domains where the relevant abstraction (here, backward
+reachability on a state graph the model has never seen) cannot be retrieved from
+training data.
+
+HLG is designed so that surface-level imitation of past Bloxorz solutions does not
+suffice: levels are non-trivial to enumerate publicly (the dead-state cache is computed
+from the engine, not from any web corpus), and the dead-state vs.\ loss distinction
+requires explicit reasoning that does not appear in standard puzzle-game text.
+
+\subsection{Overfitting and memorization shortcuts}
+\label{sec:overfit}
+
+Like ARC-AGI-3, HLG mitigates memorization with a public/private split. Tutorial level
+0 and the nine public levels (1--9) are intended as a demonstration set and are not
+used for official scoring. The semi-private set (levels 10--24) is used for
+public-API frontier-model leaderboards. The fully-private set (levels 25--33) is reserved
+for competition use. Future revisions of HLG will expand the private set with newly
+authored Bloxorz topologies that are guaranteed not to appear in any pre-2026 web
+corpus.

@@ -1,0 +1,94 @@
+\section{HLG}
+\label{sec:hlg}
+
+\subsection{HLG goals}
+\label{sec:goals}
+
+HLG targets four core functional components of agentic intelligence, mirroring
+ARC-AGI-3's framing \cite{arcagi3} but specialized to spatial planning over a discrete,
+turn-based environment:
+
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Exploration.} Some levels begin in states from which most moves are
+      legal but only a small fraction lie on a winning path. The agent must learn the
+      structure of bridge-group activation and weak-tile placement by attempting and
+      observing.
+    \item \textbf{Modeling.} The agent must mentally simulate block transitions to
+      predict whether a candidate move lands on a closed bridge or breaks a weak tile,
+      and which switch effects fire as side-effects of landing.
+    \item \textbf{Goal-Setting.} While the abstract goal (reach the end tile upright) is
+      stated, intermediate sub-goals (open bridge $x_1$ before crossing, save weak tile
+      $w_4$ for a flat traversal) must be inferred.
+    \item \textbf{Planning and Execution.} Hard levels require global planning over 100+
+      moves; the agent cannot greedily approach the goal because optimal switch order
+      is essential.
+\end{itemize}
+
+These four pillars manifest concretely as seven measurable capabilities, each justified
+by a specific affordance of the engine and harness:
+
+\begin{enumerate}[leftmargin=1.5em]
+    \item \emph{Long-horizon planning} (level 17 = 104 moves; level 30 = 113 moves).
+    \item \emph{Causal modeling of persistent side-effects} (the
+      \texttt{close} switch action is irreversible per attempt).
+    \item \emph{Dead-state vs.\ loss discrimination} via backward-reachability BFS in
+      \texttt{engine/solver.py}.
+    \item \emph{Failure-driven adaptation} via a \texttt{<previous\_attempts>} block
+      that rebroadcasts every prior trajectory.
+    \item \emph{Cross-level transfer} via \texttt{<level\_history>} when running in
+      sequence mode.
+    \item \emph{Closed- vs open-loop regimes} (per-move call vs whole-attempt plan).
+    \item \emph{Token efficiency} via per-turn token and latency accounting.
+\end{enumerate}
+
+\subsection{Intelligence as efficiency}
+\label{sec:efficiency}
+
+We adopt action efficiency, scaled relative to the optimal-or-human baseline, as the
+primary scalar measure of intelligence on HLG. We additionally report token efficiency
+and wall-clock latency, since these are operationally meaningful for any deployed agent.
+
+\subsection{The HLG environment format}
+\label{sec:format}
+
+\subsubsection{Observation space}
+\label{sec:obs}
+
+At each turn the agent receives:
+\begin{itemize}[leftmargin=1.5em]
+    \item an \emph{ASCII grid} of tile characters reflecting current bridge / broken-tile
+      state, with the block rendered as \texttt{B} (or \texttt{A}/\texttt{I} in split
+      mode);
+    \item a \texttt{<block\_state>} block giving orientation and absolute position;
+    \item a \texttt{<goal>} block giving the end-tile position;
+    \item optional \texttt{<toggle\_states>} (one entry per bridge group) and
+      \texttt{<broken\_tiles>} blocks;
+    \item on the first turn of each attempt, \texttt{<current\_attempt>},
+      \texttt{<previous\_attempts>} (with per-move resulting state and toggle deltas),
+      and (in sequence mode) \texttt{<level\_history>}.
+\end{itemize}
+
+\subsubsection{Action space}
+\label{sec:actions}
+
+The action space is a five-element discrete set:
+\[
+\mathcal{A} \;=\; \{ \texttt{u},\ \texttt{d},\ \texttt{l},\ \texttt{r},\ \texttt{s} \}
+\]
+where the first four roll the block in the corresponding direction and \texttt{s}
+toggles the active half during split mode. The action space ensures that benchmark
+difficulty arises from the puzzle, not the controls.
+
+\subsubsection{Two regimes: closed-loop and open-loop}
+\label{sec:regimes}
+
+HLG explicitly evaluates two distinct API patterns:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Turn mode (closed-loop).} One model call per move. Conversation
+      history accumulates within an attempt. Prefix caching is exploited where models
+      support it.
+    \item \textbf{One-shot mode (open-loop).} One model call per attempt. The model
+      emits a complete move sequence which is then executed deterministically.
+\end{itemize}
+The two regimes test different abilities. Turn mode rewards online correction. One-shot
+mode rewards forward simulation accuracy and is much cheaper at the API layer.

@@ -1,0 +1,29 @@
+We introduce \textbf{Humanity's Last Game (HLG)}, an interactive benchmark for evaluating
+agentic intelligence through long-horizon spatial planning in a discrete grid puzzle
+domain. Each of HLG's 34 hand-curated levels is an instance of \emph{Bloxorz}, a
+1$\times$1$\times$2 block-rolling puzzle with shared mechanics (plain tiles, weak tiles,
+two switch types, bridge groups, single- and two-target teleports) but distinct
+topologies. The benchmark targets seven capabilities: long-horizon planning, causal
+modeling of persistent side-effects, distinguishing dead states from losses, learning from
+failure across attempts, cross-level transfer, two distinct planning regimes
+(closed-loop vs.\ open-loop), and token efficiency.
+
+We define \textbf{HLG-RHAE} (Relative Human Action Efficiency), a per-level efficiency
+metric with linear level weighting and a 1.15$\times$ cap, structurally identical to
+ARC-AGI-3's RHAE \cite{arcagi3}. Because HLG environments admit verifiable optimal
+solutions \cite{tkoz0bloxorzsolver,grahambarrgrahambloxorz}, the v0.1 release uses optimal
+solution length as a stand-in for the human baseline; controlled human trials are
+scheduled for v0.2.
+
+Initial evaluations against twelve frontier-model configurations — including
+\texttt{claude-opus-4-6}, \texttt{claude-sonnet-4-6}, \texttt{gpt-5.4} and its nano
+variant, \texttt{oai-gpt-5}, and \texttt{oai-gpt-4.1}, each at \texttt{none} and
+\texttt{high} reasoning effort — show that current systems achieve substantially below
+human-optimal action efficiency. Notably, even when frontier models complete a level,
+they typically use 5--20$\times$ the optimal action count, and they often violate the
+distinction between \emph{loss} (illegal move) and \emph{dead state} (legal move that
+provably eliminates all winning futures), reactivating switches that have already closed
+required bridges.
+
+To our knowledge, HLG is the first agentic benchmark to make the loss--vs--dead-state
+distinction explicit and externally verifiable.

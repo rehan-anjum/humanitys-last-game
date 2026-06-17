@@ -1,0 +1,59 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{listings}
+\usepackage{microtype}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!60!black,
+}
+
+\title{\textbf{Humanity's Last Game (HLG)}: \\
+A Spatial-Reasoning Benchmark for Agentic Intelligence}
+
+\author{Anvay Vats\thanks{Independent. Correspondence: \texttt{anvay@example.com}.}}
+
+\date{\today}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\input{sections/01_intro}
+\input{sections/02_hlg}
+\input{sections/03_building}
+\input{sections/04_measuring}
+\input{sections/05_calibration}
+\input{sections/06_initial_evals}
+\input{sections/07_challenge_2026}
+\input{sections/08_conclusions}
+\input{sections/09_acks}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,73 @@
+\section{Measuring performance on HLG}
+\label{sec:measuring}
+
+\subsection{HLG-RHAE}
+\label{sec:rhae}
+
+HLG-RHAE is the per-level Relative Human Action Efficiency metric, structurally
+identical to ARC-AGI-3's RHAE \cite{arcagi3}. For each level $l$ in $\{1,\ldots,n\}$ with
+$n=34$:
+
+\begin{definition}[Per-level efficiency]\label{def:perlevel}
+Let $a_l$ be the agent's move count on its first WIN of level $l$ (or $\infty$ if the
+level is never won), and let $h_l$ be the human-baseline move count. The per-level
+efficiency score is
+\begin{equation}
+S_l \;=\; \min\!\left(1.15,\ \frac{h_l}{a_l}\right)^2,
+\qquad S_l \coloneqq 0 \ \text{if level $l$ unsolved.}
+\label{eq:Sl}
+\end{equation}
+\end{definition}
+
+\begin{definition}[HLG-RHAE]\label{def:rhae}
+With linear weights $w_l = l$ and the set of solved levels $\mathcal{W}$,
+\begin{equation}
+\mathrm{HLG\text{-}RHAE}
+\;=\; \min\!\left(
+    \frac{\sum_{l\in\mathcal{W}} w_l}{\sum_{l=1}^{n} w_l},\
+    \frac{\sum_{l=1}^{n} w_l \cdot S_l}{\sum_{l=1}^{n} w_l}
+  \right).
+\label{eq:rhae}
+\end{equation}
+\end{definition}
+
+The first term in the outer $\min$ is a per-environment cap that ties the maximum
+achievable score to the weighted fraction of levels solved. This prevents an agent that
+solves only the early easy levels from receiving a high score by being slightly
+super-efficient on those levels.
+
+\subsection{Design decisions}
+\label{sec:scoring-design}
+
+\paragraph{Linear level weighting.} Level $l$ contributes weight $w_l = l$. Because
+optimal solution length grows roughly monotonically in level index, this weight schedule
+matches difficulty.
+
+\paragraph{Per-level 1.15$\times$ cap.} If an agent finds a 2-action exploit on a
+20-action level, an uncapped ratio would produce $10\times$ credit and overwhelm the
+environment average. The cap follows ARC's rationale.
+
+\paragraph{Power-law (squared) efficiency term.} A linear term gives 50\% credit at
+$2\times$ human baseline; the squared term gives $25\%$. This sharpens the metric's
+discrimination between near-human and substantially worse performance.
+
+\paragraph{Action budget of 5$\times$ optimal.} For a level with optimal length $L_l$,
+the agent is terminated after $5 L_l$ moves. This keeps API costs bounded and is
+identical in spirit to ARC's $5n$ rule applied to the human-baseline median.
+
+\paragraph{First-success only.} Subsequent attempts on an already-won level do not
+modify the score. This mirrors a ``first-contact'' interpretation of generalization.
+
+\subsection{Leaderboards}
+\label{sec:leaderboards}
+
+We report two leaderboards.
+
+\paragraph{Official.} The official leaderboard uses the canonical system prompt from
+\texttt{system\_prompt.md}, no harness, and the \texttt{none}-effort and \texttt{high}-effort
+variants of each model. This produces an apples-to-apples comparison across providers.
+
+\paragraph{Community.} The community leaderboard accepts arbitrary harnesses and
+self-reported scores, in the spirit of ARC's community track.
+
+\input{tables/leaderboard.tex}
