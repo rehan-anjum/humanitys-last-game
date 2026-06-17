@@ -1,0 +1,189 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-05-31T19:11:11.254154+00:00",
+  "log_root": "logs",
+  "metric": "HLG-RHAE",
+  "baseline": "optimal_solution_length",
+  "total_scoring_levels": 33,
+  "rows": [
+    {
+      "model_tag": "oai-gpt-4.1-2025-04-14_high",
+      "mode": "one-shot",
+      "first_win_actions": {
+        "level1": 7,
+        "level33": null
+      },
+      "levels_won": 1,
+      "levels_attempted": 2,
+      "total_attempts": 53,
+      "total_prompt_tokens": 164002,
+      "total_completion_tokens": 656,
+      "total_tokens": 164658,
+      "hlg_rhae": 0.0018,
+      "log_complete": false,
+      "any_aborted": true,
+      "level_summaries": {
+        "level1": {
+          "result": "WIN",
+          "first_win_actions": 7,
+          "num_attempts": 4,
+          "total_prompt_tokens": 9132,
+          "total_completion_tokens": 34,
+          "total_moves": 20,
+          "log_complete": true,
+          "duration_s": 5.036
+        },
+        "level33": {
+          "result": "ABORTED",
+          "first_win_actions": null,
+          "num_attempts": 49,
+          "total_prompt_tokens": 154870,
+          "total_completion_tokens": 622,
+          "total_moves": 851,
+          "log_complete": false,
+          "duration_s": 0.0
+        }
+      }
+    },
+    {
+      "model_tag": "oai-gpt-4.1-2025-04-14_high",
+      "mode": "turn",
+      "first_win_actions": {
+        "level1": 7
+      },
+      "levels_won": 1,
+      "levels_attempted": 1,
+      "total_attempts": 1,
+      "total_prompt_tokens": 18153,
+      "total_completion_tokens": 5393,
+      "total_tokens": 23546,
+      "hlg_rhae": 0.0018,
+      "log_complete": true,
+      "any_aborted": false,
+      "level_summaries": {
+        "level1": {
+          "result": "WIN",
+          "first_win_actions": 7,
+          "num_attempts": 1,
+          "total_prompt_tokens": 18153,
+          "total_completion_tokens": 5393,
+          "total_moves": 7,
+          "log_complete": true,
+          "duration_s": 93.961
+        }
+      }
+    },
+    {
+      "model_tag": "claude-opus-4-6_high",
+      "mode": "turn",
+      "first_win_actions": {
+        "level33": null
+      },
+      "levels_won": 0,
+      "levels_attempted": 1,
+      "total_attempts": 0,
+      "total_prompt_tokens": 0,
+      "total_completion_tokens": 0,
+      "total_tokens": 0,
+      "hlg_rhae": 0.0,
+      "log_complete": false,
+      "any_aborted": true,
+      "level_summaries": {
+        "level33": {
+          "result": "ABORTED",
+          "first_win_actions": null,
+          "num_attempts": 0,
+          "total_prompt_tokens": 0,
+          "total_completion_tokens": 0,
+          "total_moves": 0,
+          "log_complete": false,
+          "duration_s": 0.0
+        }
+      }
+    },
+    {
+      "model_tag": "claude-sonnet-4-6_high",
+      "mode": "one-shot",
+      "first_win_actions": {
+        "level33": null
+      },
+      "levels_won": 0,
+      "levels_attempted": 1,
+      "total_attempts": 2,
+      "total_prompt_tokens": 5322,
+      "total_completion_tokens": 11644,
+      "total_tokens": 16966,
+      "hlg_rhae": 0.0,
+      "log_complete": false,
+      "any_aborted": true,
+      "level_summaries": {
+        "level33": {
+          "result": "ABORTED",
+          "first_win_actions": null,
+          "num_attempts": 2,
+          "total_prompt_tokens": 5322,
+          "total_completion_tokens": 11644,
+          "total_moves": 30,
+          "log_complete": false,
+          "duration_s": 0.0
+        }
+      }
+    },
+    {
+      "model_tag": "gpt-5.4",
+      "mode": "one-shot",
+      "first_win_actions": {
+        "level33": null
+      },
+      "levels_won": 0,
+      "levels_attempted": 1,
+      "total_attempts": 191,
+      "total_prompt_tokens": 8574334,
+      "total_completion_tokens": 6626,
+      "total_tokens": 8580960,
+      "hlg_rhae": 0.0,
+      "log_complete": false,
+      "any_aborted": true,
+      "level_summaries": {
+        "level33": {
+          "result": "ABORTED",
+          "first_win_actions": null,
+          "num_attempts": 191,
+          "total_prompt_tokens": 8574334,
+          "total_completion_tokens": 6626,
+          "total_moves": 11063,
+          "log_complete": false,
+          "duration_s": 0.0
+        }
+      }
+    },
+    {
+      "model_tag": "oai-gpt-5-2-2025-12-11_high",
+      "mode": "one-shot",
+      "first_win_actions": {
+        "level33": null
+      },
+      "levels_won": 0,
+      "levels_attempted": 1,
+      "total_attempts": 1,
+      "total_prompt_tokens": 2430,
+      "total_completion_tokens": 5860,
+      "total_tokens": 8290,
+      "hlg_rhae": 0.0,
+      "log_complete": false,
+      "any_aborted": true,
+      "level_summaries": {
+        "level33": {
+          "result": "ABORTED",
+          "first_win_actions": null,
+          "num_attempts": 1,
+          "total_prompt_tokens": 2430,
+          "total_completion_tokens": 5860,
+          "total_moves": 20,
+          "log_complete": false,
+          "duration_s": 0.0
+        }
+      }
+    }
+  ]
+}

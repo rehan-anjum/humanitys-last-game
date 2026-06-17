@@ -1,0 +1,138 @@
+{
+  "level1": {
+    "optimal_length": 7,
+    "sequence": "RDDRRDR"
+  },
+  "level2": {
+    "optimal_length": 17,
+    "sequence": "URDRRRRUUDRDRRURU"
+  },
+  "level3": {
+    "optimal_length": 19,
+    "sequence": "RURRRULDRUURRRDDDRU"
+  },
+  "level4": {
+    "optimal_length": 28,
+    "sequence": "ULURRURRRRRRDRDDDDDRULLLLLLD"
+  },
+  "level5": {
+    "optimal_length": 33,
+    "sequence": "LLLRLLLLLDRDDRRRRDRRRRLLLLDLLLLLL"
+  },
+  "level6": {
+    "optimal_length": 35,
+    "sequence": "RRRDDRDDRDRULLLUULUUURRDRRULDDRRDDR"
+  },
+  "level7": {
+    "optimal_length": 44,
+    "sequence": "DLURRRRRDRLULLLLLDRDRDRRRUURDLURUURRRDRDRDLU"
+  },
+  "level8": {
+    "optimal_length": 11,
+    "sequence": "RRDDDD_UURR"
+  },
+  "level9": {
+    "optimal_length": 28,
+    "sequence": "RDRRRRRRUR_D_D_RRRRRU_LLLLLD"
+  },
+  "level10": {
+    "optimal_length": 65,
+    "sequence": "RR_DDRRDRDDDDD_LDDDRDDDL_LL_D_L_D_LULLLDURRRDR_LRURUUUULLULDLLLLL"
+  },
+  "level11": {
+    "optimal_length": 47,
+    "sequence": "RRRRULDDDRRRDLULLLUURURRDRULLLDDLLLUURUULDRURDL"
+  },
+  "level12": {
+    "optimal_length": 65,
+    "sequence": "LDRURDLURURURURRRDDDLURUUULLLRRRDDDLDRURDLURUURUDLDDDLURULULLLDDL"
+  },
+  "level13": {
+    "optimal_length": 46,
+    "sequence": "UULDRDRDLUUUULLLLLLLDDDRULDRDDRDDRURRRRRULDLUU"
+  },
+  "level14": {
+    "optimal_length": 67,
+    "sequence": "RRRRULLDRRRDDDDLLLDRRDRRLLUURRULUDDLLDLURRRUUUULLLLLLURDLLLLLDDDRDR"
+  },
+  "level15": {
+    "optimal_length": 63,
+    "sequence": "RRRRUU_UUUUURRRUURRRDRDU_LLL_D_L_ULULLLD_LLLLLDLLDDDLDRURRRRRRR"
+  },
+  "level16": {
+    "optimal_length": 33,
+    "sequence": "RRRR_RD_RU_RLLLRRRRLLLLLD_RU_RRRR"
+  },
+  "level17": {
+    "optimal_length": 106,
+    "sequence": "DDDDDLURRRRRURRRLLLDLLLLUUUUUURRRRDRRRRDLURDURDLUURDLLURDLLLLULLLLDDDDDDRRRRURRRDDULULLLDLLLUUULURRRRRDRRR"
+  },
+  "level18": {
+    "optimal_length": 85,
+    "sequence": "DLURRRRUUDDLLLDRULLDRURRRDDUULLLULDRULLDDDDRRLLUUUURRDRULDDRULDRURRRRRDDDRULDDRULDLUR"
+  },
+  "level19": {
+    "optimal_length": 67,
+    "sequence": "RRRRRRRRDRULLLLLLDRURRRRRDDDDDLLLLLDLURRRRRRULDLLLLLDDDDRRRLLLLLLUU"
+  },
+  "level20": {
+    "optimal_length": 60,
+    "sequence": "DLDRDLUURUULLLDLLURDDLDDLDURUURUURRRDLD_U_LLLLDDDDD_LD_RRRRD"
+  },
+  "level21": {
+    "optimal_length": 71,
+    "sequence": "RDLULDRURRURRRULDDDUUURDLLLDLLDLURDRULDRULDRDDRDDRRRUUDDLLULDRRRUUUURRR"
+  },
+  "level22": {
+    "optimal_length": 65,
+    "sequence": "RURRRRDRDDDLDURUUULURDLULULLDLLLDRURDLDDDRDULUUURULDRURURRRDRRRRU"
+  },
+  "level23": {
+    "optimal_length": 75,
+    "sequence": "RDDRURRRRRULDRULLLUUUURRRRUDLLLLDDDDLLLLLLLLLUUURRUDLURDDRDDDRRDRUUUUUURDLU"
+  },
+  "level24": {
+    "optimal_length": 57,
+    "sequence": "DLDRDLUUDDRULURDRRUURULDRURRRRLLLLLDRLURDLURRRRRRRDLRURRR"
+  },
+  "level25": {
+    "optimal_length": 55,
+    "sequence": "URDLURDLURRRRULULLURLDRRDDLLLLDRRURRRUURRRURDLUURDLURDL"
+  },
+  "level26": {
+    "optimal_length": 110,
+    "sequence": "UULLLDLLLDRURRUURRDRRDRRUU_UUULLLDLLLLLDD_LLULLLDLLLLLL_LD_DDDUURURRRURRRDRRUU_UUULLLDLDDDDRRR_LLULLLDLDDDDRRL"
+  },
+  "level27": {
+    "optimal_length": 71,
+    "sequence": "RRRRRULDRURDLLLLLLDRULLDRURRRRURRRRDDDLDDDLLLDLUUUURDLLLLLLLULDDRULDRUL"
+  },
+  "level28": {
+    "optimal_length": 106,
+    "sequence": "LDDDRDLURDDRRDDRRRUUULULULULDRRDRDRDRRDLDLLUUULULULLULLDLURRRDRDRDRDRDLL_L_D_L_D_LLLLUULLLLD_LLLLLLUULLLLU"
+  },
+  "level29": {
+    "optimal_length": 104,
+    "sequence": "RDLULDRURDDRRLLUULDRULDLULUULLRRDDRDRURDLURUURRLLDDDDDDRRLLUUUULLLLLLRRRRDLURRRRRRLLLLLULDDDDLLLDRULDRUL"
+  },
+  "level30": {
+    "optimal_length": 114,
+    "sequence": "DRDDRRURRDRRRRUDLLLLULLLDDLURRRRRRUUURRRURDDDLLDLDRUURDLDLLLLULLDLLULDLURUDLDRURDRRULDDLURRRRRRRULUUURRRURULLLLLDL"
+  },
+  "level31": {
+    "optimal_length": 91,
+    "sequence": "ULDLLUUUUDDDDRRRULDRUUUURULDDRULDLLLDDDLDDUURUUULLLLDRULDDDDDLURLURDRURRURRDRRRULDRUUUUURDL"
+  },
+  "level32": {
+    "optimal_length": 129,
+    "sequence": "UULDRURURDLRULDLDLURDLURURURDLLDDDLDLLULDRRRUUUUURURRUDLLDLDDDDDLLLLURLDRRRRUUUUURURRUDLLDLDDDDDLLLURDRRURUUURRULDLDLDRULLULLLLLD"
+  },
+  "level33": {
+    "optimal_length": 65,
+    "sequence": "RRRRULDDLURUURRDRDRULLURDRDDRDLDDRRUDLLUURULUULULDRULLLDDDLDLLDLU"
+  },
+  "level0": {
+    "optimal_length": 8,
+    "sequence": "RRRRRRRR"
+  }
+}
