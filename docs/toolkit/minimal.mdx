@@ -1,0 +1,45 @@
+---
+title: "Sample HLG Toolkit Agent"
+description: "An example agent that interacts with HLG locally"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Here's a minimal example that plays a level and renders it in the terminal:
+
+```python theme={null}
+import random
+import hlg
+from hlg import GameAction, GameState
+
+arc = hlg.Arcade()
+env = arc.make("level0", render_mode="terminal")
+if env is None:
+    print("Failed to create environment")
+    exit(1)
+
+obs = env.reset()
+for step in range(100):
+    action = random.choice(env.action_space)
+    obs = env.step(action)
+
+    if obs.state == GameState.WIN:
+        print(f"Level won at step {step}!")
+        break
+    if obs.state == GameState.LOSS:
+        env.reset()
+    if obs.state == GameState.DEAD:
+        print(f"Dead state reached at step {step}; resetting")
+        env.reset()
+
+scorecard = arc.get_scorecard()
+if scorecard:
+    print(f"Final HLG-RHAE: {scorecard.score:.2%}")
+```
+
+<Note>
+  This example uses `render_mode="terminal"` to display the board in your terminal. If
+  the board appears wrapped, enlarge your terminal or zoom out (Cmd/Ctrl + minus).
+</Note>

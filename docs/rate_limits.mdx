@@ -1,0 +1,30 @@
+---
+title: "Rate Limits"
+description: "Limiting RPM for your agents"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+## v0.1: local-only
+
+The `hlg.Arcade` SDK has **no rate limits** — calls are in-process. Run as many parallel environments as your CPU and memory allow.
+
+## v0.2: planned hosted limits
+
+When the hosted REST surface lands (see [Local vs Online](/local-vs-online)), the published rate limits will be:
+
+| Tier         | Requests per minute | Concurrent game instances |
+| ------------ | ------------------- | -------------------------- |
+| Anonymous    | 30                  | 4                          |
+| Registered   | 300                 | 32                         |
+| Researcher   | by request          | by request                 |
+
+These match ARC-AGI-3's defaults. Final numbers will be confirmed before v0.2 ships.
+
+## Tips for staying under limits in v0.2
+
+- Use `OperationMode.OFFLINE` for development; switch to `OperationMode.ONLINE` only for the final official run.
+- Batch attempts within a single scorecard rather than opening one scorecard per attempt.
+- One-shot mode reduces total request count by ~50× on long levels.

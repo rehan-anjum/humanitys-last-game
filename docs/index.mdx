@@ -1,0 +1,82 @@
+---
+title: "HLG Quickstart"
+description: "Humanity's Last Game (HLG) is an agentic spatial-reasoning benchmark designed to measure an AI agent's ability to plan over long horizons in novel grid puzzle environments."
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Traditionally, AI is measured with static benchmarks — fine for evaluating LLMs on language and reasoning chains, but insufficient for evaluating frontier **agentic** systems. HLG measures four capabilities the static-benchmark format cannot capture:
+
+- **Exploration** — actively discovering bridge structure and weak-tile placement
+- **Causal Modeling** — predicting persistent side-effects of switch activations
+- **Goal Decomposition** — identifying intermediate sub-goals (open bridge X before crossing)
+- **Long-Horizon Planning** — sequencing 100+ moves where greedy proximity to the goal is wrong
+
+By building agents that play HLG, you contribute directly to AGI evaluation research. [Learn more about HLG](/hlg).
+
+## Play your first HLG level
+
+### 1. Install the HLG toolkit
+
+```bash theme={null}
+uv init
+uv add hlg
+# or pip install hlg
+```
+
+### 2. Set your `HLG_API_KEY` (optional)
+
+The default `OperationMode.OFFLINE` runs entirely locally and needs no key. An API key is only required for `OperationMode.ONLINE` (planned for v0.2) which enables remote scorecards and replays.
+
+```bash theme={null}
+export HLG_API_KEY="your-api-key-here"
+# or
+echo 'HLG_API_KEY=your-api-key-here' > .env
+```
+
+### 3. Play your first level
+
+Create a file called `my-play.py`:
+
+```python theme={null}
+import hlg
+from hlg import GameAction
+
+arc = hlg.Arcade()
+env = arc.make("level0", render_mode="terminal")
+
+obs = env.reset()
+for _ in range(10):
+    obs = env.step(GameAction.RIGHT)
+    if obs.state != hlg.GameState.NOT_FINISHED:
+        break
+
+print(arc.get_scorecard().score)
+```
+
+Run it:
+
+```bash theme={null}
+uv run python my-play.py
+```
+
+You should see the level rendered in your terminal and an HLG-RHAE score.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Pick another level" icon="grid" href="/available-levels">
+    Browse all 34 levels and their mechanics.
+  </Card>
+  <Card title="Build an agent" icon="robot" href="/create-agent">
+    Plug a model into the harness in 20 lines.
+  </Card>
+  <Card title="Read the methodology" icon="ruler" href="/methodology">
+    HLG-RHAE in detail with worked examples.
+  </Card>
+  <Card title="Read the paper" icon="book" href="https://arxiv.org/abs/0000.00000">
+    Full benchmark write-up.
+  </Card>
+</CardGroup>

@@ -1,0 +1,36 @@
+---
+title: "Close Scorecard"
+description: "How to close and finalize a scorecard using the HLG Toolkit"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Closing a scorecard marks it final and prevents further records from being added.
+
+```python theme={null}
+import hlg
+
+arc = hlg.Arcade()
+sc_id = arc.create_scorecard(tags=["my-run"])
+
+env = arc.make("level0", scorecard_id=sc_id)
+# ... play ...
+
+final = arc.close_scorecard(sc_id)
+print(f"Final HLG-RHAE: {final.score:.2%}")
+print(f"Levels seen: {len(final.levels)}")
+```
+
+## Default scorecard
+
+`arc.close_scorecard()` (no argument) closes the default scorecard and clears it. The next `make()` call will lazily create a new default scorecard.
+
+```python theme={null}
+final = arc.close_scorecard()
+```
+
+## After closing
+
+A closed scorecard still serves reads (`score`, `levels`, `first_win_actions`) but ignores any further `record_terminal` calls.

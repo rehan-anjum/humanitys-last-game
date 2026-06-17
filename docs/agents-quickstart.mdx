@@ -1,0 +1,48 @@
+---
+title: "Agents Quickstart"
+description: "Build AI agents for HLG levels"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Get started with HLG agents by cloning the repository and running the included reference agents.
+
+## Step 1: Clone the repo
+
+```bash theme={null}
+git clone https://github.com/vats98754/humanitys-last-game.git
+cd humanitys-last-game
+uv sync
+```
+
+## Step 2: Run the random-policy agent
+
+```bash theme={null}
+uv run python -c "
+import random, hlg
+arc = hlg.Arcade()
+env = arc.make('level0', render_mode='terminal')
+obs = env.reset()
+for _ in range(50):
+    obs = env.step(random.choice(env.action_space))
+    if obs.state != hlg.GameState.NOT_FINISHED:
+        break
+print(obs.state.value, 'in', obs.action_count, 'actions')
+"
+```
+
+## Step 3: Try the LLM harness (internal, optional)
+
+The internal Cicero-gateway harness in `main.py` runs frontier models against the full benchmark in parallel. It requires `MODEL_GATEWAY_API_KEY` set in your environment and is **not** available outside Cicero. Until v0.2 ships portable provider adapters, see [Create an Agent](/create-agent) for how to wire your own model into the SDK.
+
+```bash theme={null}
+# Internal Cicero only
+export MODEL_GATEWAY_API_KEY=sk-...
+uv run python main.py --level 1 2 3 --models claude-sonnet-4-6
+```
+
+## Watch the action
+
+Add `render_mode="terminal"` to `arc.make()` to print the board after every move.

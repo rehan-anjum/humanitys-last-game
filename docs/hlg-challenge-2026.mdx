@@ -1,0 +1,44 @@
+---
+title: "HLG Challenge 2026"
+description: "Local dev starter kit for the HLG Challenge 2026"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+<Note>
+  The HLG Challenge 2026 is a planned competition. Final dates, prize amounts,
+  and submission rules will be published on the [leaderboard](/leaderboard) page
+  closer to the event.
+</Note>
+
+## Format
+
+The HLG Challenge 2026 will run on the **fully-private** level set (levels 25–33) plus newly authored levels added in v0.2. Submitted agents will be evaluated against the canonical [`system_prompt.md`](https://github.com/vats98754/humanitys-last-game/blob/main/system_prompt.md) and the same action / token / wall-clock budgets as the [official leaderboard](/methodology).
+
+## Tracks
+
+- **Official.** No harness, single canonical system prompt. The same configuration as `Competition Mode`.
+- **Community.** Any harness, self-reported scores; not used as evidence of progress toward AGI.
+
+## Threshold
+
+The grand-prize threshold is **85% HLG-RHAE on the fully-private set**, matching the ARC-AGI-3 threshold convention.
+
+As of v0.1 release no system has cleared 10% on the semi-private set. The threshold is intentionally a substantial extrapolation beyond the current capability frontier.
+
+## Prerequisites
+
+- Python 3.10+
+- `uv sync` in the cloned repo.
+- For local development, no API key is required.
+
+## Submitting (planned for v0.2)
+
+```bash theme={null}
+uv run python scripts/submit_to_leaderboard.py \
+    --scorecard scorecards/my-final-run.jsonl
+```
+
+This will package your scorecard, validate against the schema, and POST to the hosted leaderboard.

@@ -1,0 +1,38 @@
+---
+title: "OpenAI Template"
+description: "Run an HLG agent backed by the OpenAI API"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+<Note>
+  **v0.1**: this template is a placeholder. The portable provider adapter under
+  `hlg.providers.openai` ships in v0.2. The skeleton below shows the planned
+  interface.
+</Note>
+
+## Planned (v0.2)
+
+```python theme={null}
+import os
+import hlg
+from hlg.providers.openai import OpenAIAgent
+
+arc = hlg.Arcade()
+
+agent = OpenAIAgent(
+    model="gpt-5.4",
+    api_key=os.environ["OPENAI_API_KEY"],
+    reasoning_effort="high",
+    system_prompt_path="system_prompt.md",
+)
+
+env = arc.make("level5")
+agent.play(env)
+```
+
+## Today (v0.1)
+
+Use the official `openai` SDK directly. The canonical pattern (system prompt + per-turn user message + single-character response) is documented on [Create an Agent](/create-agent).

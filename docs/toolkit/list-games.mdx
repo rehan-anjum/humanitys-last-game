@@ -1,0 +1,35 @@
+---
+title: "List Levels"
+description: "How to list available HLG levels using the toolkit"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+`Arcade.list_levels()` returns metadata for all 34 HLG levels.
+
+```python theme={null}
+import hlg
+
+arc = hlg.Arcade()
+for info in arc.list_levels():
+    flags = []
+    if info.has_switches:   flags.append("switches")
+    if info.has_teleports:  flags.append("teleports")
+    if info.has_weak_tiles: flags.append("weak")
+    print(
+        f"{info.level_id:<10} {info.rows}x{info.cols:<3} "
+        f"opt={info.optimal_solution_length}  ({', '.join(flags) or 'plain only'})"
+    )
+```
+
+Each `EnvironmentInfo` exposes:
+
+- `level_id`: e.g. `"level17"`
+- `title`: same as `level_id` in v0.1; reserved for human-readable titles in v0.2.
+- `rows` / `cols`: grid dimensions.
+- `has_switches` / `has_teleports` / `has_weak_tiles`: mechanic flags.
+- `optimal_solution_length`: from `data/solutions.json` if present, else `None`.
+
+See [Available Levels](/available-levels) for the full table.

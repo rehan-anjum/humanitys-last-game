@@ -1,0 +1,79 @@
+---
+title: "EnvironmentWrapper"
+description: "Generic Python interface for interacting with HLG levels"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+`EnvironmentWrapper` is the per-level handle returned by `Arcade.make()`. One wrapper per attempt scope.
+
+## Methods
+
+### `reset()`
+
+Reset to the level's initial state, starting a new attempt.
+
+**Returns** `Observation`.
+
+### `step(action, data=None)`
+
+Apply one action.
+
+**Parameters**
+
+- `action` (`GameAction`): one of `UP`, `DOWN`, `LEFT`, `RIGHT`, `SWITCH`.
+- `data` (`dict`, optional): accepted for ARC API parity; HLG ignores it (no actions need x/y coordinates).
+
+**Returns** `Observation`. After a terminal state (`WIN`, `LOSS`, `DEAD`) further `step()` calls return the same terminal observation idempotently until `reset()`.
+
+### `render(mode="ascii")`
+
+Return a string rendering of the current board.
+
+**Modes**
+
+- `"ascii"` — same character grid the LLM sees.
+- `"terminal"` — same content prefixed with ANSI clear-screen.
+
+### `close()`
+
+Idempotent shutdown. Optional; the wrapper has no resources to free.
+
+## Properties
+
+- `action_space` — the list `[UP, DOWN, LEFT, RIGHT, SWITCH]`.
+- `level` — the parsed `Level` (engine type) for read-only inspection.
+- `level_id` — canonical id, e.g. `"level17"`.
+
+## Observation
+
+```python theme={null}
+@dataclass
+class Observation:
+    frame: str                              # ASCII grid
+    state: GameState                        # NOT_FINISHED | WIN | LOSS | DEAD
+    score: int                              # 0 in v0.1
+    action_count: int                       # cumulative steps in current attempt
+    attempt_num: int                        # 1-indexed
+    block_position: tuple[int, int]         # (row, col)
+    toggle_states: dict[str, bool]          # bridge group state
+    broken_tiles: set[tuple[int, int]]      # weak tiles broken in this attempt
+```
+
+## Worked example
+
+```python theme={null}
+import hlg
+from hlg import GameAction, GameState
+
+arc = hlg.Arcade()
+env = arc.make("level5")
+
+obs = env.reset()
+while obs.state == GameState.NOT_FINISHED:
+    obs = env.step(GameAction.RIGHT)
+
+print(obs.state, obs.action_count)
+```

@@ -1,0 +1,52 @@
+---
+title: "Vocabulary"
+description: "Key terms used in HLG documentation"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+## HLG
+
+Humanity's Last Game. An agentic spatial-reasoning benchmark of 34 Bloxorz levels.
+
+## Bloxorz
+
+The 2007 puzzle game by Damien Clarke whose mechanics HLG inherits. The player rolls a 1×1×2 block over a tiled grid and drops it upright into a target hole.
+
+## Block
+
+The agent-controlled object. Always occupies one or two grid cells depending on orientation: `UPRIGHT` (one cell), `LYING_H` (two horizontally adjacent), or `LYING_V` (two vertically adjacent).
+
+## Tile
+
+A grid cell. Tile types: `plain` (`p`), `start` (`s`), `end` (`e`), `weak` (`w`), `weak switch` (`W`), `strong switch` (`S`), `teleport` (`t`), and `missing` (`x`).
+
+## Switch
+
+A tile that activates an effect when the block (or, for a weak switch, even a split half) lands on it. Effects are `open`, `close`, or `toggle` applied to a target bridge group.
+
+## Bridge
+
+A tile group whose walkability can be flipped by switches. `p`-prefixed groups (`p1`, `p2`, ...) start open; `x`-prefixed groups (`x1`, `x2`, ...) start closed.
+
+## Dead state
+
+A state that is reachable from the initial state and is *legal* (the block is on a valid cell) but from which no future action sequence reaches WIN. Computed via backward-reachability BFS in `engine/solver.py`. Distinct from LOSS.
+
+## Attempt
+
+A play of one level from the initial state until WIN, LOSS, or DEAD. An evaluation may make multiple attempts on the same level; HLG-RHAE counts only the first WIN's action count.
+
+## Toolkit
+
+The HLG Toolkit — the open-source `hlg` Python SDK for interacting with HLG environments locally (and, in v0.2, via API).
+
+## Arcade
+
+The main entry point class in the HLG Toolkit (`hlg.Arcade()`). Handles configuration, environment discovery, and scorecard management.
+
+## Environment
+
+An interactive level instance an agent can play. Each environment has a board state, available actions, and a terminal state. Created via `arc.make("level0")`.

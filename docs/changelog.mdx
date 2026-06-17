@@ -1,0 +1,38 @@
+---
+title: "HLG Changelog"
+description: "Updates and announcements"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+## v0.1.0 (current)
+
+**Initial public release.**
+
+- 34 hand-curated Bloxorz levels in `levels/`.
+- Pure-Python engine: state, validator, BFS dead-state solver in `engine/`.
+- Verified-optimal solutions for every level in `verify_solutions.py`.
+- `hlg.Arcade()` Python SDK with `OperationMode.OFFLINE` (~150 LOC).
+- Eight-event JSONL logging schema (`agent_logger.py`).
+- HLG-RHAE scoring metric (`hlg.scoring`, `scripts/compute_rhae.py`).
+- `extract_leaderboard.py` aggregator over `logs/`.
+- Mintlify documentation site (this site).
+- LaTeX research paper (`paper/`).
+- OpenAPI 3.1 spec for the planned REST surface (`docs/hlg-openapi.yaml`).
+
+## Planned
+
+### v0.2
+
+- `OperationMode.ONLINE` and a hosted REST surface implementing `hlg-openapi.yaml`.
+- `hlg.providers.{anthropic, openai, langchain, huggingface, agentops}` portable adapters.
+- Controlled human-baseline trials replacing optimal-as-baseline in `methodology`.
+- Public leaderboard ingest via `scripts/submit_to_leaderboard.py`.
+
+### v0.3
+
+- Additional fully-private levels authored after the v0.1 release.
+- Replay viewer with frame-by-frame diff visualization.
+- Multi-attempt regression dashboards.

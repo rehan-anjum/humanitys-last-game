@@ -1,0 +1,33 @@
+---
+title: "API Keys"
+description: "How to get and use your HLG API key"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+## v0.1
+
+The default `OperationMode.OFFLINE` runs entirely locally and does not require an API key. You can ignore this page until v0.2.
+
+## v0.2 (planned)
+
+Registering for an API key will let you:
+
+- **Submit to the official leaderboard** — automatic per-15-minute batched submission.
+- **Track progress** across sessions and machines.
+- **Share replays** of completed levels via shareable URLs.
+
+### How to get a key (planned)
+
+1. Go to `https://hlg.example.dev/platform`.
+2. Sign in with GitHub or Google.
+3. Open the **API Keys** section in your profile.
+4. Create a new key.
+
+Once you have your key, set it in your environment or `.env`:
+
+```bash theme={null}
+export HLG_API_KEY="hlg-..."
+```

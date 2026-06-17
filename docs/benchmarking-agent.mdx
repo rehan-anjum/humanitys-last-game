@@ -1,0 +1,59 @@
+---
+title: "Benchmarking an Agent"
+description: "Run repeatable agent evaluations"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+The HLG harness is the standard way to measure AI performance across model providers, runs, and configurations.
+
+## When to use it
+
+- Compare model versions or prompt strategies on the same level set.
+- Detect regressions after code or prompt changes.
+- Generate official scorecards and replays for sharing.
+- Experiment with multiple agentic architectures side by side.
+
+## Quickstart
+
+### Prerequisites
+
+- `uv sync`
+- For LLM agents: a provider API key (Anthropic, OpenAI) and a model adapter — see v0.2 plans on [Partner Templates](/partner_templates/anthropic).
+
+### Run the full benchmark
+
+```bash theme={null}
+uv run python main.py --level $(seq 0 33) --models my-model
+```
+
+The harness produces:
+
+- `logs/my-model/<level_id>/run_<ts>.jsonl` — per-turn traces
+- `data/leaderboard.json` — aggregated HLG-RHAE — after running `extract_leaderboard.py`
+
+### Compute HLG-RHAE
+
+```bash theme={null}
+uv run python scripts/extract_leaderboard.py
+uv run python scripts/compute_rhae.py --print-summary
+```
+
+## Modes
+
+| Flag           | Mode                                                                               |
+| -------------- | ---------------------------------------------------------------------------------- |
+| (default)      | Turn mode, parallel across (model, level) pairs.                                   |
+| `--one-shot`   | Open-loop: model emits a full move sequence per attempt.                           |
+| `--sequence`   | Run levels in order, passing prior level history into each next prompt.            |
+| `--resume`     | Skip (model, level) pairs that already have a `level_end result=WIN` in `logs/`.   |
+
+## Inspecting results
+
+The aggregated leaderboard is the single source of truth:
+
+```bash theme={null}
+uv run python scripts/compute_rhae.py --model claude-opus-4-6_high --breakdown
+```

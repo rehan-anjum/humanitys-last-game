@@ -1,0 +1,58 @@
+---
+title: "HLG Toolkit Quickstart"
+description: "Getting started with the HLG Toolkit"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+The **HLG Toolkit** is the open-source `hlg` Python SDK for interacting with HLG levels. It mirrors the shape of ARC-AGI-3's `arc_agi.Arcade` so that documentation and code can be ported with minimal change.
+
+## Install
+
+```bash theme={null}
+uv add hlg
+# or pip install hlg
+```
+
+## Three lines to play
+
+```python theme={null}
+import hlg
+arc = hlg.Arcade()
+env = arc.make("level0", render_mode="terminal")
+```
+
+Then:
+
+```python theme={null}
+obs = env.reset()
+obs = env.step(hlg.GameAction.RIGHT)
+```
+
+## Surface
+
+The toolkit is intentionally tiny:
+
+- `hlg.Arcade()` — entry point ([Arcade reference](/toolkit/hlg))
+- `arc.make(level_id)` → `EnvironmentWrapper` ([env wrapper](/toolkit/environment_wrapper))
+- `env.step(action)` / `env.reset()` / `env.render()` ([submit-action](/toolkit/submit-action), [render-games](/toolkit/render-games))
+- `arc.list_levels()` ([list-games](/toolkit/list-games))
+- `arc.create_scorecard()` / `get_scorecard()` / `close_scorecard()` ([create](/toolkit/create-scorecard), [get](/toolkit/get-scorecard), [close](/toolkit/close-scorecard))
+- `hlg.GameAction` enum: `UP DOWN LEFT RIGHT SWITCH` ([list-actions](/toolkit/list-actions))
+
+## When to use the toolkit vs the engine directly
+
+| You want                                              | Use                          |
+| ----------------------------------------------------- | ---------------------------- |
+| To prototype an agent.                                | Toolkit                       |
+| To submit to the official leaderboard.                | Toolkit + offline scorecard.  |
+| To re-implement the engine in another language.       | Read `engine/` directly.      |
+| To extend the engine with new tile types.             | Patch `engine/`, then surface via the toolkit. |
+
+## v0.2 surface (planned)
+
+- `OperationMode.ONLINE` for hosted scorecards.
+- `hlg.providers.{anthropic,openai,langchain,huggingface}` adapters.
+- `hlg.serve()` / `listen_and_serve` for the FastAPI surface.

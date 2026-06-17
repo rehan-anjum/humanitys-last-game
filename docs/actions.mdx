@@ -1,0 +1,62 @@
+---
+title: "Actions"
+description: "Input interface for HLG levels"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Actions
+
+HLG implements a five-element action interface:
+
+| Action            | `GameAction` | Description                                                             |
+| ----------------- | ------------ | ----------------------------------------------------------------------- |
+| Reset             | n/a          | Re-initialize the level. Call `env.reset()` directly, not as a step.    |
+| Move up           | `UP` (`u`)   | Roll the block one step up (decreases row index).                       |
+| Move down         | `DOWN` (`d`) | Roll the block one step down (increases row index).                     |
+| Move left         | `LEFT` (`l`) | Roll the block one step left (decreases column index).                  |
+| Move right        | `RIGHT` (`r`)| Roll the block one step right (increases column index).                 |
+| Switch half       | `SWITCH` (`s`)| In split mode: toggle which half is active. Outside split mode: no-op.  |
+
+## Movement physics
+
+Block motion depends on current orientation:
+
+- From **UPRIGHT** at `(r, c)`:
+  - `r` → LYING_H, occupies `(r, c+1)` and `(r, c+2)`
+  - `l` → LYING_H, occupies `(r, c-2)` and `(r, c-1)`
+  - `u` → LYING_V, occupies `(r-2, c)` and `(r-1, c)`
+  - `d` → LYING_V, occupies `(r+1, c)` and `(r+2, c)`
+- From **LYING_H** at `(r, c)`-`(r, c+1)`:
+  - `r` → UPRIGHT at `(r, c+2)`
+  - `l` → UPRIGHT at `(r, c-1)`
+  - `u`/`d` → slides one row, still LYING_H
+- From **LYING_V** at `(r, c)`-`(r+1, c)`:
+  - `u` → UPRIGHT at `(r-1, c)`
+  - `d` → UPRIGHT at `(r+2, c)`
+  - `l`/`r` → slides one column, still LYING_V
+
+## Win and loss conditions
+
+- **WIN**: block is UPRIGHT and its single occupied cell is the end tile (`e`).
+- **LOSS**: any occupied cell is off the grid, missing (`x`), a closed bridge, or the FULL block is UPRIGHT on a weak tile (`w`).
+- **DEAD**: the move is legal but the resulting state is provably unwinnable.
+
+Lying flat on a weak tile is safe; only an upright landing breaks it.
+
+## Code example
+
+```python theme={null}
+import hlg
+from hlg import GameAction
+
+arc = hlg.Arcade()
+env = arc.make("level0")
+obs = env.reset()
+
+obs = env.step(GameAction.RIGHT)
+print(obs.state)   # NOT_FINISHED
+print(obs.frame)   # ASCII grid
+```

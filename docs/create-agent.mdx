@@ -1,0 +1,98 @@
+---
+title: "Create an Agent"
+description: "Build a custom agent for HLG levels"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+A custom agent in HLG is any function that maps an `Observation` to a `GameAction`. The minimum-viable agent is six lines.
+
+## Random policy
+
+```python theme={null}
+import random
+import hlg
+
+arc = hlg.Arcade()
+env = arc.make("level0")
+obs = env.reset()
+
+while obs.state == hlg.GameState.NOT_FINISHED:
+    obs = env.step(random.choice(env.action_space))
+```
+
+## Heuristic policy
+
+A purposeful policy that always heads toward the end tile:
+
+```python theme={null}
+import hlg
+from hlg import GameAction
+
+arc = hlg.Arcade()
+env = arc.make("level1")
+end = env.level.end_pos
+
+def go_to_goal(obs):
+    r, c = obs.block_position
+    er, ec = end
+    if abs(c - ec) > abs(r - er):
+        return GameAction.RIGHT if ec > c else GameAction.LEFT
+    return GameAction.DOWN if er > r else GameAction.UP
+
+obs = env.reset()
+while obs.state == hlg.GameState.NOT_FINISHED:
+    obs = env.step(go_to_goal(obs))
+```
+
+Greedy navigation suffices for tutorial-class levels but fails on levels with switches: opening a required bridge is not the closest action.
+
+## LLM-driven policy
+
+Bring your own provider. The pattern:
+
+```python theme={null}
+import hlg
+from hlg import GameAction
+
+arc = hlg.Arcade()
+env = arc.make("level5")
+obs = env.reset()
+
+system_prompt = open("system_prompt.md").read()
+
+def llm_move(observation, prior_attempts):
+    user_message = f"""
+    <board>
+    {observation.frame}
+    </board>
+    <block_state>{observation.block_position}</block_state>
+    <toggle_states>{observation.toggle_states}</toggle_states>
+    <previous_attempts>{prior_attempts}</previous_attempts>
+    """
+    # call YOUR provider here
+    raw = your_llm.chat(system=system_prompt, user=user_message)
+    for line in raw.splitlines():
+        token = line.strip().lower()
+        if token in {"u", "d", "l", "r", "s"}:
+            return GameAction.from_str(token)
+    raise RuntimeError(f"no valid direction in: {raw!r}")
+```
+
+The canonical system prompt in `system_prompt.md` is the same one used to produce the official leaderboard. See [LLM Agents](/llm_agents) for the full prompt and prefix-caching notes.
+
+## Recording attempts
+
+To record per-turn data the way the official leaderboard does, write JSONL events with the same schema documented on [Recordings](/recordings). The simplest approach is to import `agent_logger.AgentLogger` directly:
+
+```python theme={null}
+from agent_logger import AgentLogger
+logger = AgentLogger(model_id="my_agent", reasoning_effort="none", level_id="level5")
+logger.level_start("level5")
+# ... call logger.turn(...), logger.attempt_end(...), logger.level_end(...) ...
+logger.close()
+```
+
+This will write to `logs/my_agent/level5/run_<ts>.jsonl`, where `extract_leaderboard.py` will pick it up.

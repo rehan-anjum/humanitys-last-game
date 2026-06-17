@@ -1,0 +1,70 @@
+---
+title: "Recordings & Replays"
+description: "Viewing your agent's HLG gameplay"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Recordings let you view, share, and post-hoc analyze your agent's play. Every HLG run produces one JSONL file per level under `logs/<model_tag>/<level_id>/run_<timestamp>.jsonl`.
+
+## Record availability
+
+| Method            | Recordings Available                              |
+| ----------------- | ------------------------------------------------- |
+| Local Toolkit     | Yes — written to `logs/` automatically.           |
+| Online (v0.2)     | Yes — viewable via scorecard at the HLG site.     |
+| Manual `step()`   | No — direct `Arcade.make().step()` does not log.  |
+
+## File format
+
+Each run is a JSONL file: one JSON object per line, in event order.
+
+### Event types
+
+The 8 event types are produced by `agent_logger.AgentLogger`:
+
+| Event           | When                                                    |
+| --------------- | ------------------------------------------------------- |
+| `level_start`   | First event in the file.                                |
+| `attempt_start` | Each new attempt within the level.                      |
+| `attempt_plan`  | One-shot mode: full move sequence emitted at attempt start. |
+| `turn`          | Per-move event in turn mode (one per `step()` call).    |
+| `dead_state`    | Solver detected the post-move state is unwinnable.      |
+| `move_error`    | API call or parse failure mid-attempt.                  |
+| `attempt_end`   | Each attempt's terminal event.                          |
+| `level_end`     | Last event in the file (single per run).                |
+
+### Schema (selected fields)
+
+```json theme={null}
+{"event": "level_start", "run_id": "<model_tag>/<level_id>/<ts>", "ts": "2026-04-12T13:28:17Z", "level_id": "level33"}
+{"event": "attempt_start", "level_id": "level33", "attempt_num": 1}
+{"event": "turn", "attempt_num": 1, "turn_num": 5, "direction": "r", "move_status": "OK", "state_before": "UPRIGHT (3,1)", "state_after": "FLAT_X (3,2)--(3,3)", "prompt_tokens": 2430, "completion_tokens": 312, "latency_ms": 1820, "user_message": "...", "raw_response": "r"}
+{"event": "dead_state", "attempt_num": 1, "turn_num": 12, "state": "UPRIGHT (5,4)", "toggle_states": {"x1": false, "p2": true}}
+{"event": "attempt_end", "attempt_num": 1, "num_moves": 13, "status": "LOSS", "prompt_tokens": 31200, "completion_tokens": 4001, "duration_s": 24.31}
+{"event": "level_end", "level_id": "level33", "result": "GAVE_UP", "num_attempts": 5, "total_moves": 87, "total_prompt_tokens": 145000, "total_completion_tokens": 22001, "duration_s": 121.4}
+```
+
+`attempt_plan` events are emitted instead of per-`turn` events when running in one-shot mode (`AttemptPlan` carries the entire sequence in a single API call).
+
+## Reading a recording
+
+```python theme={null}
+import json
+from pathlib import Path
+
+for line in Path("logs/oai-gpt-5-2-2025-12-11_high/level33/run_20260412T132817Z.jsonl").read_text().splitlines():
+    ev = json.loads(line)
+    if ev["event"] == "attempt_end":
+        print(ev["attempt_num"], ev["status"], ev["num_moves"])
+```
+
+## Aggregating recordings into a leaderboard
+
+`scripts/extract_leaderboard.py` walks every run file and produces `data/leaderboard.json` keyed by `(model_tag, mode)` pairs.
+
+```bash theme={null}
+uv run python scripts/extract_leaderboard.py --print-summary
+```

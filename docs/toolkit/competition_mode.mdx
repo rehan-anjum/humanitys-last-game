@@ -1,0 +1,49 @@
+---
+title: "Competition Mode"
+description: "Running HLG in Competition Mode"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Competition Mode is the canonical configuration used to produce official HLG-RHAE scores.
+
+## Configuration
+
+| Setting               | Value                                                |
+| --------------------- | ---------------------------------------------------- |
+| Operation mode        | `OperationMode.OFFLINE`                              |
+| Action budget         | `5 × optimal_solution_length` per level              |
+| Max attempts          | unbounded (action budget is the gate)                |
+| Levels                | semi-private set (levels 10–24)                      |
+| System prompt         | `system_prompt.md`, exact, no harness scaffolding    |
+| Reasoning effort      | `none` and `high` reported separately                |
+| Mode                  | `turn` (parallel)                                    |
+| Recording             | enabled, JSONL to `logs/<model_tag>/<level>/`        |
+
+## Running competition mode
+
+```bash theme={null}
+uv run python main.py \
+    --level $(seq 10 24) \
+    --models claude-opus-4-6 oai-gpt-5-2-2025-12-11 \
+    --reasoning-effort high
+```
+
+After completion:
+
+```bash theme={null}
+uv run python scripts/extract_leaderboard.py
+uv run python scripts/compute_rhae.py --print-summary
+```
+
+## Submission
+
+In v0.1 submissions are local (you publish your own scorecard). In v0.2 submissions will route through the hosted leaderboard. See [HLG Challenge 2026](/hlg-challenge-2026).
+
+## Disqualifying conditions
+
+- Modifying `system_prompt.md` for the official leaderboard.
+- Modifying any level file in `levels/`.
+- Wrapping the model with task-specific harness logic (e.g. brute-force search over the action space, hand-crafted dead-state lookups). Such submissions belong on the *community* leaderboard, not the official one.

@@ -1,0 +1,32 @@
+---
+title: "List Available Actions"
+description: "How to retrieve available actions for an HLG level"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+HLG's action space is fixed across all levels:
+
+```python theme={null}
+from hlg import GameAction
+list(GameAction)
+# [GameAction.UP, GameAction.DOWN, GameAction.LEFT, GameAction.RIGHT, GameAction.SWITCH]
+```
+
+You can also read the action space from any environment instance:
+
+```python theme={null}
+import hlg
+arc = hlg.Arcade()
+env = arc.make("level0")
+print(env.action_space)
+```
+
+`SWITCH` is meaningful only in split mode (after a 2-target teleport). Outside split mode it is a no-op that still counts toward the action budget. See [Actions](/actions) for the full physics.
+
+## Notes
+
+- Unlike ARC-AGI-3, HLG has no `ACTION6` (x/y coordinate) action — all five HLG actions are simple. `GameAction.is_complex()` always returns `False`.
+- HLG has no built-in undo. Reset the environment with `env.reset()` to start a new attempt.

@@ -1,0 +1,80 @@
+---
+title: "Submit Action"
+description: "How to submit actions and include reasoning logs using the HLG Toolkit"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Use `EnvironmentWrapper.step(action)` to submit one action and receive the next observation.
+
+```python theme={null}
+import hlg
+from hlg import GameAction
+
+arc = hlg.Arcade()
+env = arc.make("level0")
+obs = env.reset()
+
+obs = env.step(GameAction.RIGHT)
+print(obs.state)          # NOT_FINISHED | WIN | LOSS | DEAD
+print(obs.action_count)   # cumulative steps in this attempt
+print(obs.frame)          # ASCII grid
+```
+
+## Including reasoning logs
+
+If you want to write per-turn reasoning text alongside the action (in the format the official harness uses), use `agent_logger.AgentLogger` directly:
+
+```python theme={null}
+import hlg
+from hlg import GameAction
+from agent_logger import AgentLogger, describe_state
+
+logger = AgentLogger(model_id="my_agent", reasoning_effort="none", level_id="level5")
+
+arc = hlg.Arcade()
+env = arc.make("level5")
+obs = env.reset()
+logger.level_start("level5")
+logger.attempt_start(level_id="level5", attempt_num=1)
+
+direction = "r"
+state_before = describe_state(env.level)  # see agent_logger.describe_state for fmt
+
+obs = env.step(GameAction.from_str(direction))
+
+logger.turn(
+    level_id="level5",
+    attempt_num=1,
+    turn_num=1,
+    user_message="<board>...</board>",
+    raw_response="r",
+    direction=direction,
+    move_status="OK",
+    state_before="UPRIGHT (3,1)",
+    state_after="FLAT_X (3,2)--(3,3)",
+    prompt_tokens=2400,
+    completion_tokens=12,
+    latency_ms=1820,
+)
+
+logger.attempt_end(level_id="level5", attempt_num=1, num_moves=1, status="LOSS",
+                   prompt_tokens=2400, completion_tokens=12, duration_s=2.0)
+logger.level_end(level_id="level5", won=False, num_attempts=1, total_moves=1,
+                 total_prompt_tokens=2400, total_completion_tokens=12, duration_s=2.1)
+logger.close()
+```
+
+The output appears at `logs/my_agent/level5/run_<ts>.jsonl` and is automatically picked up by `scripts/extract_leaderboard.py`.
+
+## Action validation
+
+Invalid characters raise `ValueError`. The five valid characters are `u`, `d`, `l`, `r`, `s`.
+
+```python theme={null}
+GameAction.from_str("u")   # GameAction.UP
+GameAction.from_str("R")   # GameAction.RIGHT (case-insensitive)
+GameAction.from_str("z")   # ValueError
+```

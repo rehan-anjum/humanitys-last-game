@@ -1,0 +1,42 @@
+---
+title: "Anthropic Template"
+description: "Run an HLG agent backed by Anthropic's Claude API"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+<Note>
+  **v0.1**: this template is a placeholder. The portable provider adapter under
+  `hlg.providers.anthropic` ships in v0.2. The skeleton below shows the planned
+  interface; the imports will resolve in v0.2.
+</Note>
+
+## Planned (v0.2)
+
+```python theme={null}
+import os
+import hlg
+from hlg.providers.anthropic import AnthropicAgent
+
+arc = hlg.Arcade()
+
+agent = AnthropicAgent(
+    model="claude-opus-4-6",
+    api_key=os.environ["ANTHROPIC_API_KEY"],
+    reasoning_effort="high",
+    system_prompt_path="system_prompt.md",
+)
+
+env = arc.make("level5", render_mode="terminal")
+agent.play(env)
+
+print(arc.get_scorecard().score)
+```
+
+## Today (v0.1) — bring your own loop
+
+You can build the same thing today using the official `anthropic` SDK. Read the canonical system prompt from `system_prompt.md`, build the per-turn user message in the format described on [LLM Agents](/llm_agents), and call `Anthropic().messages.create(...)` per turn.
+
+The full v0.1-compatible example is documented in [Create an Agent](/create-agent#llm-driven-policy).

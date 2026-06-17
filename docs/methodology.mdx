@@ -1,0 +1,80 @@
+---
+title: "HLG Scoring Methodology"
+description: "How HLG-RHAE works"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+HLG uses **Relative Human Action Efficiency (HLG-RHAE, pronounced "ray")** to score AI systems. HLG-RHAE measures per-level action efficiency compared to a human (or, in v0.1, optimal) baseline, weighted across all 33 scoring levels (tutorial level 0 is excluded from official scoring).
+
+## What Gets Measured
+
+AI is scored on two criteria:
+
+- **Completion** — How many levels did the AI solve?
+- **Efficiency** — How many actions did the AI take compared to the baseline?
+
+## What Counts as an Action
+
+An action is a single `step()` call that submits a move (`u`, `d`, `l`, `r`, or `s`). Internal operations that do not alter the environment (tool calls, reasoning steps, retries inside the model) are not counted.
+
+## Human Baseline
+
+In v0.1 we use the **optimal solution length** for each level as the baseline `h_l`, taken from `verify_solutions.py`. This is a conservative proxy: real first-contact human players are expected to use materially more than `h_l` actions because they must explore before planning.
+
+In v0.2, we will replace `h_l` with the **upper-median best human action count** measured in a controlled study (10 first-contact participants per level, no level-specific instructions, 20-minute soft cutoff).
+
+<Note>
+  Because optimal length is *strictly less than or equal to* the human baseline,
+  HLG-RHAE under v0.1 yields *lower* numbers than it will under v0.2. This is
+  intentional and explicitly disclosed in Section 5 of the paper.
+</Note>
+
+## How Scoring Works
+
+### Per-Level Scoring
+
+For each level the AI completes:
+
+```
+level_score = min(1.15, baseline_actions / ai_actions) ** 2
+```
+
+Worked examples:
+
+- Baseline 10 actions, AI takes 10 → level score = `1.0` (100%)
+- Baseline 10 actions, AI takes 20 → level score = `0.25` (25%)
+- Baseline 10 actions, AI takes 100 → level score = `0.01` (1%)
+
+### Per-Level Score Cap
+
+The maximum score per level is capped at **1.15× baseline**. If the AI discovers a shortcut and completes a level faster than the baseline, it can receive at most 1.15. This stops a single anomalous level from disproportionately inflating the total score.
+
+### Per-Environment Aggregation
+
+The total HLG-RHAE is the linearly-weighted average of per-level scores, with weight `w_l = l` (the 1-indexed level number). This underweights tutorial-like early levels and overweights later levels where mastery must be demonstrated.
+
+The maximum HLG-RHAE is also capped by the **weighted fraction of levels completed**. To reach 100% the AI must complete all 33 scoring levels, including the final ones.
+
+Example: an AI that solves only levels 1–15 has a max possible HLG-RHAE of:
+
+```
+sum(1..15) / sum(1..33) = 120 / 561 ≈ 21.4%
+```
+
+No matter how efficiently it played levels 1–15, its HLG-RHAE cannot exceed 21.4%.
+
+### Total Score
+
+HLG-RHAE is a single number in `[0, 1]`, reported on the leaderboard as a percentage.
+
+## Score Interpretation
+
+| Score   | Interpretation                                                                            |
+| ------- | ----------------------------------------------------------------------------------------- |
+| 100%    | AI solves all 33 levels matching or surpassing the baseline efficiency on each.            |
+| 50–99%  | Strong performance: most levels solved with reasonable efficiency.                         |
+| 1–49%   | Mixed performance: some levels solved but efficiency materially below baseline.            |
+| 0%      | AI never completes a level, or every level it completes scores 0 due to weights/cap.      |

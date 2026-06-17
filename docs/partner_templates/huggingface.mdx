@@ -1,0 +1,33 @@
+---
+title: "HuggingFace Template"
+description: "Run an HLG agent backed by Hugging Face Inference"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+<Note>
+  **v0.1**: this template is a placeholder. The portable provider adapter under
+  `hlg.providers.huggingface` ships in v0.2.
+</Note>
+
+## Planned (v0.2)
+
+```python theme={null}
+import os
+import hlg
+from hlg.providers.huggingface import HuggingFaceAgent
+
+arc = hlg.Arcade()
+agent = HuggingFaceAgent(
+    model="meta-llama/Meta-Llama-3.1-70B-Instruct",
+    api_token=os.environ["HF_TOKEN"],
+)
+env = arc.make("level0")
+agent.play(env)
+```
+
+## Today (v0.1)
+
+Use `huggingface_hub.InferenceClient` directly with the system prompt and per-turn user message described on [LLM Agents](/llm_agents).

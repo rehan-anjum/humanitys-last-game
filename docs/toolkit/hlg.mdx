@@ -1,0 +1,90 @@
+---
+title: "Arcade"
+description: "HLG client for interactive environments"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+The `Arcade` class is the main entry point for interacting with HLG levels. It handles configuration, level discovery, and scorecard management.
+
+## Constructor parameters
+
+All parameters are optional. Constructor arguments take precedence over environment variables.
+
+```python theme={null}
+from hlg import Arcade, OperationMode
+import logging
+
+arc = Arcade(
+    operation_mode=OperationMode.OFFLINE,
+    arc_api_key="reserved-for-v0.2",
+    levels_dir="./levels",
+    recordings_dir="./recordings",
+    logger=logging.getLogger("my_agent"),
+)
+```
+
+### `operation_mode`
+
+| Mode                    | Description                                                  |
+| ----------------------- | ------------------------------------------------------------ |
+| `OperationMode.OFFLINE` | Local-only. Default in v0.1.                                  |
+| `OperationMode.ONLINE`  | Reserved for v0.2. Raises `NotImplementedError` in v0.1.     |
+
+Environment variable: `OPERATION_MODE`.
+
+### `arc_api_key`
+
+Reserved for v0.2 (`ONLINE` mode). Accepted now for forward-compatibility but ignored. Environment variable: `HLG_API_KEY`.
+
+### `levels_dir`
+
+Directory to scan for `level*.txt` files. Default: `./levels` relative to the package root. Environment variable: `HLG_LEVELS_DIR`.
+
+### `recordings_dir`
+
+Directory to write JSONL recordings to. Default: `./recordings`. Environment variable: `HLG_RECORDINGS_DIR`.
+
+### `logger`
+
+Optional `logging.Logger` instance. Default: a child logger named `hlg.arcade` logging to stdout.
+
+## Methods
+
+### `make(level_id, *, seed=0, scorecard_id=None, render_mode=None)`
+
+Create and initialize an environment for a specific level.
+
+**Parameters**
+
+- `level_id` (`str`): `"level0"`, `"level17"`, or just `"17"`.
+- `seed` (`int`): accepted for API parity; HLG levels are deterministic.
+- `scorecard_id` (`str`, optional): defaults to the lazily-created shared scorecard.
+- `render_mode` (`str`, optional): `"terminal"` or `"ascii"`.
+
+**Returns** `EnvironmentWrapper`.
+
+```python theme={null}
+env = arc.make("level0", render_mode="terminal")
+env = arc.make("17", scorecard_id=my_card_id)
+```
+
+### `list_levels()`
+
+List the 34 levels with summary metadata.
+
+**Returns** `list[EnvironmentInfo]`. Each entry exposes `level_id`, `title`, `rows`, `cols`, `has_switches`, `has_teleports`, `has_weak_tiles`, and (when available) `optimal_solution_length`.
+
+### `create_scorecard(*, source_url=None, tags=None, opaque=None)`
+
+Create a new scorecard for tracking runs. **Returns** the `scorecard_id` string. `open_scorecard` is an alias.
+
+### `get_scorecard(scorecard_id=None)`
+
+Return the named scorecard (or the default, if `None`). Returns `None` if not found.
+
+### `close_scorecard(scorecard_id=None)`
+
+Close a scorecard and return its final state. Closing the default clears it; the next `make()` will create a new default.

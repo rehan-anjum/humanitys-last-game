@@ -1,0 +1,43 @@
+---
+title: "Overview"
+description: "HLG REST API Overview"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+The HLG REST API exposes the same operations as the `hlg.Arcade` Python SDK, over HTTP, with a uniform JSON envelope. The full spec is published at `docs/hlg-openapi.yaml`.
+
+<Note>
+  In v0.1 only the **OpenAPI spec** is published. The server (`hlg.listen_and_serve`)
+  lands in v0.2. Use the spec to build clients now; request/response shapes are stable.
+</Note>
+
+## Authentication
+
+Every request requires an `X-API-Key` header. Anonymous keys are issued automatically when omitted, with stricter [Rate Limits](/rate_limits).
+
+## Resources
+
+- **Commands** — start/reset a game instance, execute one of the five simple actions.
+- **Levels** — discover available level ids and metadata.
+- **Scorecards** — open, close, retrieve, and per-level retrieve.
+
+## Action numbering
+
+The five action endpoints map onto HLG's five-action `GameAction` enum:
+
+| Endpoint                 | Action     | `GameAction` |
+| ------------------------ | ---------- | ------------ |
+| `execute-action-1`       | Move up    | `UP`         |
+| `execute-action-2`       | Move down  | `DOWN`       |
+| `execute-action-3`       | Move left  | `LEFT`       |
+| `execute-action-4`       | Move right | `RIGHT`      |
+| `execute-action-5`       | Switch     | `SWITCH`     |
+
+There is no `execute-action-6` (no x/y action in HLG) and no `execute-action-7` (use `start-or-reset` to reset; HLG has no per-action undo).
+
+## Reference
+
+See the auto-generated reference under **API Reference** in the sidebar.

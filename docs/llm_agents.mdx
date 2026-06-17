@@ -1,0 +1,48 @@
+---
+title: "LLM Agents"
+description: "Language model agents for HLG"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+The official HLG leaderboard runs each model against the same canonical system prompt in `system_prompt.md`, with **no harness-side scaffolding**. This isolates the model's intrinsic agentic ability from prompt engineering or external memory.
+
+## Conversation structure
+
+In **turn mode**:
+
+1. The system prompt is sent once per attempt, on the first turn.
+2. Each subsequent turn appends only the user message: current board, block state, goal, optional toggle states, broken tiles.
+3. The first turn additionally includes `<previous_attempts>` (with per-move state-after and toggle deltas) and (in sequence mode) `<level_history>`.
+4. The model emits a single direction character per turn.
+
+In **one-shot mode**:
+
+1. The system prompt is sent once.
+2. A single user message contains the initial state plus full prior-attempt history.
+3. The model emits a space-separated sequence of direction characters for the entire attempt.
+
+## Prefix caching
+
+Modern providers (OpenAI's automatic, Anthropic's `cache_control`) discount repeated prefixes. The HLG harness keeps the system prompt and most of the user-message frame stable across turns, so turns 2+ pay only for the incremental `<board>`/`<block_state>` delta on supported providers.
+
+## The canonical system prompt
+
+The system prompt covers:
+
+- Role definition and output format (single character per turn).
+- Coordinate system and tile vocabulary.
+- Block physics in all three orientations.
+- Win and loss conditions, including weak-tile orientation rules.
+- Dead-state vs loss distinction, with the `[DEAD]` tag explained.
+- Switch and teleport semantics including split mode and merge geometry.
+- Decision rules: don't repeat losing sequences, factor in switch effects, plan before acting.
+- A `<planning_strategy>` block that recommends working backward from the WIN target.
+
+Read it in full: [system_prompt.md](https://github.com/vats98754/humanitys-last-game/blob/main/system_prompt.md).
+
+## Where reasoning effort matters
+
+Reasoning models with `reasoning_effort=high` (e.g. `claude-opus-4-6_high`, `gpt-5.4_high`) consistently outperform their `none` counterparts on dead-state recognition. Models without reasoning often re-enter dead branches because they cannot reliably perform the backward reachability the dead-state distinction requires.

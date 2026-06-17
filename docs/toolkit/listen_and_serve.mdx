@@ -1,0 +1,45 @@
+---
+title: "Listen and Serve"
+description: "Running the REST endpoints to interact with HLG environments"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+In v0.1 HLG ships **only the OpenAPI spec** for the REST surface (see [REST API Overview](/rest_overview)). A `listen_and_serve` entry point that boots a FastAPI server backed by the in-process engine is planned for v0.2.
+
+## What you get in v0.1
+
+- `docs/hlg-openapi.yaml` — full OpenAPI 3.1 spec.
+- `/api-reference/*` pages — auto-generated from the spec.
+
+This lets integrators build clients ahead of v0.2 and verify their request shapes against a stable contract.
+
+## What you get in v0.2 (planned)
+
+```python theme={null}
+# Planned for v0.2 — not available in v0.1.
+import hlg
+
+hlg.listen_and_serve(
+    host="0.0.0.0",
+    port=8000,
+    operation_mode=hlg.OperationMode.OFFLINE,
+)
+```
+
+This will expose:
+
+- `POST /commands/start-or-reset` — open a new game session for a level.
+- `POST /commands/execute-action-{1..5}` — submit an action.
+- `GET  /levels` — list available levels.
+- `POST /scorecards/open` / `close` — scorecard lifecycle.
+- `GET  /scorecards/{id}` — retrieve a scorecard.
+
+The contract follows ARC-AGI-3's REST shape so existing tooling can be ported.
+
+<Note>
+  Until v0.2 ships, use the in-process `hlg.Arcade()` SDK. It's faster than HTTP and
+  has no rate limits.
+</Note>

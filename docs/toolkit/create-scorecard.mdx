@@ -1,0 +1,40 @@
+---
+title: "Create Scorecard"
+description: "How to create a custom scorecard using the HLG Toolkit"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Use `Arcade.create_scorecard()` to track related runs together.
+
+```python theme={null}
+import hlg
+
+arc = hlg.Arcade()
+
+scorecard_id = arc.create_scorecard(
+    source_url="https://github.com/my/repo",
+    tags=["experiment-1", "claude-opus-4-6", "v1"],
+    opaque={"git_sha": "abc123", "prompt_version": 4},
+)
+
+env = arc.make("level10", scorecard_id=scorecard_id)
+```
+
+`open_scorecard()` is an alias for `create_scorecard()`.
+
+## Default scorecard
+
+If you don't pass `scorecard_id`, the first `make()` call lazily creates a default scorecard (with tags `["wrapper", "default"]`) and reuses it across all subsequent `make()` calls. Use this when you don't need to compare runs.
+
+## Inspecting a scorecard during play
+
+```python theme={null}
+sc = arc.get_scorecard(scorecard_id)
+print(f"Levels seen: {len(sc.levels)}")
+print(f"HLG-RHAE so far: {sc.score:.2%}")
+```
+
+`sc.score` is computed lazily from terminal events; check it as often as you like.

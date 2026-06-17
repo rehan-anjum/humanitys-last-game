@@ -1,0 +1,204 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "HLG Docs",
+  "colors": {
+    "primary": "#7C3AED",
+    "light": "#A78BFA",
+    "dark": "#7C3AED"
+  },
+  "favicon": "/images/favicon.png",
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "background": {
+    "color": {
+      "light": "#ffffff",
+      "dark": "#0a0d0d"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Overview",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "index",
+              "api-keys",
+              "agents-quickstart",
+              "create-agent",
+              "benchmarking-agent"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "available-levels",
+              "actions",
+              "methodology",
+              "leaderboard",
+              "scorecards",
+              "recordings",
+              "level-schema"
+            ]
+          },
+          {
+            "group": "Further Reading",
+            "pages": [
+              "local-vs-online",
+              "full-play-test",
+              "swarms",
+              "hlg-challenge-2026"
+            ]
+          },
+          {
+            "group": "Learn More",
+            "pages": [
+              "hlg",
+              "vocabulary",
+              "llm_agents"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "feature-requests",
+              "contributing",
+              "changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "HLG Toolkit",
+        "groups": [
+          {
+            "group": "Toolkit",
+            "pages": [
+              "toolkit/overview",
+              "toolkit/minimal",
+              "toolkit/hlg",
+              "toolkit/environment_wrapper",
+              "toolkit/list-games",
+              "toolkit/list-actions",
+              "toolkit/submit-action",
+              "toolkit/render-games",
+              "toolkit/create-scorecard",
+              "toolkit/get-scorecard",
+              "toolkit/close-scorecard",
+              "toolkit/listen_and_serve",
+              "toolkit/competition_mode"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "REST API",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "rest_overview",
+              "rate_limits"
+            ]
+          },
+          {
+            "group": "Commands",
+            "pages": [
+              "api-reference/commands/start-or-reset-game-instance",
+              "api-reference/commands/execute-simple-action-1",
+              "api-reference/commands/execute-simple-action-2",
+              "api-reference/commands/execute-simple-action-3",
+              "api-reference/commands/execute-simple-action-4",
+              "api-reference/commands/execute-simple-action-5"
+            ]
+          },
+          {
+            "group": "Levels",
+            "pages": [
+              "api-reference/levels/list-available-levels"
+            ]
+          },
+          {
+            "group": "Scorecards",
+            "pages": [
+              "api-reference/scorecards/open-scorecard",
+              "api-reference/scorecards/close-scorecard",
+              "api-reference/scorecards/retrieve-scorecard",
+              "api-reference/scorecards/retrieve-scorecard-one-level"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Partner Templates",
+        "groups": [
+          {
+            "group": "Templates",
+            "pages": [
+              "partner_templates/anthropic",
+              "partner_templates/openai",
+              "partner_templates/huggingface",
+              "partner_templates/langchain",
+              "partner_templates/agentops"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/vats98754/humanitys-last-game",
+          "icon": "github"
+        },
+        {
+          "anchor": "arxiv Paper",
+          "href": "https://arxiv.org/abs/0000.00000",
+          "icon": "book"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/images/logo-light.png",
+    "dark": "/images/logo-dark.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Leaderboard",
+        "href": "/leaderboard"
+      }
+    ],
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/vats98754/humanitys-last-game"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/vats98754/humanitys-last-game",
+      "x": "https://x.com/vats98754"
+    }
+  },
+  "api": {
+    "openapi": ["docs/hlg-openapi.yaml"],
+    "playground": {
+      "display": "interactive"
+    }
+  },
+  "search": {
+    "prompt": "Search HLG docs..."
+  },
+  "seo": {
+    "metatags": {
+      "og:site_name": "HLG Docs",
+      "twitter:card": "summary_large_image"
+    }
+  }
+}

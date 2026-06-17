@@ -1,0 +1,66 @@
+---
+title: "Swarms"
+description: "Orchestrate agents across multiple HLG levels"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Swarms run an agent across multiple levels in parallel, opening and closing scorecards automatically.
+
+## Running the harness
+
+```bash theme={null}
+git clone https://github.com/vats98754/humanitys-last-game.git
+cd humanitys-last-game
+uv sync
+```
+
+Each swarm:
+
+- Creates one environment instance per [level](/available-levels).
+- Runs all environments concurrently using a `ThreadPoolExecutor`.
+- Automatically manages a single shared [scorecard](/scorecards).
+- Cleans up when all level runs complete.
+
+## Running with the internal harness (Cicero-only)
+
+The internal harness in `main.py` runs all 34 levels in parallel, configurable via CLI:
+
+```bash theme={null}
+uv run python main.py \
+    --level $(seq 0 33) \
+    --models claude-opus-4-6 oai-gpt-5-2-2025-12-11 \
+    --reasoning-effort high
+```
+
+Output traces accumulate in `logs/<model_tag>/<level_id>/run_<ts>.jsonl`.
+
+## Building a portable swarm
+
+In v0.1 you can write a portable swarm using only `hlg.Arcade` and your provider of choice:
+
+```python theme={null}
+from concurrent.futures import ThreadPoolExecutor
+import hlg
+
+def play_one(level_id):
+    arc = hlg.Arcade()
+    env = arc.make(level_id)
+    obs = env.reset()
+    while obs.state == hlg.GameState.NOT_FINISHED:
+        action = your_agent(obs)        # YOUR policy
+        obs = env.step(action)
+    return level_id, obs.state.value, obs.action_count
+
+with ThreadPoolExecutor(max_workers=8) as pool:
+    results = list(pool.map(play_one, [f"level{i}" for i in range(34)]))
+
+for r in results:
+    print(r)
+```
+
+## Sequence mode (cross-level context)
+
+`main.py --sequence` runs levels strictly in order and injects each completed level's attempt history into the next level's first user message via `<level_history>`. Useful for measuring whether a model can transfer strategies across levels.

@@ -1,0 +1,44 @@
+---
+title: "Render Levels"
+description: "How to render HLG levels"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+The HLG toolkit supports two render modes for levels: `"ascii"` (plain text) and `"terminal"` (ANSI clear-screen prefixed).
+
+```python theme={null}
+import hlg
+
+arc = hlg.Arcade()
+
+# Render only when explicitly asked.
+env = arc.make("level0")
+obs = env.reset()
+print(env.render(mode="ascii"))
+
+# Auto-render after every step (terminal-friendly).
+env_live = arc.make("level0", render_mode="terminal")
+obs = env_live.reset()
+obs = env_live.step(hlg.GameAction.RIGHT)
+```
+
+## Frame characters
+
+| Character | Meaning                                                |
+| --------- | ------------------------------------------------------ |
+| `x`       | missing (or trimmed off the right edge of a row).      |
+| `p`       | plain walkable.                                        |
+| `s`       | start tile.                                            |
+| `e`       | end (goal) tile.                                       |
+| `w`       | weak tile.                                             |
+| `W`       | weak switch.                                           |
+| `S`       | strong switch.                                         |
+| `t`       | teleport.                                              |
+| `B`       | block (any orientation; check `obs.block_position`).    |
+| `A`       | active half (split mode).                               |
+| `I`       | inactive half (split mode).                             |
+
+Closed bridges and broken weak tiles render as `x`.

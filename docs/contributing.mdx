@@ -1,0 +1,38 @@
+---
+title: "Contributing"
+description: "Help build and maintain HLG"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Contributions to HLG are welcome. The repository is at [`vats98754/humanitys-last-game`](https://github.com/vats98754/humanitys-last-game).
+
+## What we accept
+
+- **Engine bug fixes.** Anything that diverges from the verified solutions in `verify_solutions.py`.
+- **New levels.** New `levelN.txt` files with verified-optimal solutions added to `verify_solutions.py:SOLUTIONS`.
+- **Documentation.** Clarifications, typos, additional worked examples on existing pages.
+- **Provider adapters.** Once v0.2 lands, contributions to `hlg/providers/*` are welcome.
+
+## What we don't accept
+
+- Changes to existing levels in `levels/` (their solutions are pinned).
+- Renaming the eight logger event types (`level_start`, `level_end`, `attempt_start`, `attempt_end`, `attempt_plan`, `turn`, `dead_state`, `move_error`) — they are part of the public schema documented on [Recordings](/recordings).
+- Hardcoding the internal Cicero gateway URL anywhere except `agent.py`/`mgw_call.sh` (legacy).
+- Any change that adds a runtime dependency to `engine/` or core `hlg/`.
+
+## Style
+
+- Match `AGENTS.md` conventions.
+- No emojis in code, commits, or PRs.
+- Prefer pure-Python; the engine has zero runtime dependencies and we want to keep it that way.
+
+## Pre-merge checks
+
+```bash theme={null}
+uv run python verify_solutions.py     # all 34 levels must pass
+uv run python -m pytest               # if you added tests
+uv run python -m ruff check .         # lint
+```

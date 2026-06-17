@@ -1,0 +1,335 @@
+openapi: 3.1.0
+info:
+  title: HLG REST API
+  version: "0.1.0-spec"
+  description: |
+    REST surface for Humanity's Last Game (HLG).
+
+    **Status**: v0.1 ships this OpenAPI spec only. The server implementation
+    (`hlg.listen_and_serve`) lands in v0.2. Use this document to build clients
+    ahead of time; the request/response shapes are stable.
+  contact:
+    name: HLG Maintainers
+    url: https://github.com/vats98754/humanitys-last-game
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://three.hlg.example.dev
+    description: Production (planned, v0.2)
+  - url: http://localhost:8000
+    description: Local listen_and_serve (planned, v0.2)
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    GameState:
+      type: string
+      enum: [NOT_FINISHED, WIN, LOSS, DEAD]
+
+    Frame:
+      type: object
+      properties:
+        ascii:
+          type: string
+          description: ASCII grid (rows top-first, space-separated tokens).
+        rows:
+          type: integer
+        cols:
+          type: integer
+        block_position:
+          type: array
+          items: { type: integer }
+          minItems: 2
+          maxItems: 2
+        toggle_states:
+          type: object
+          additionalProperties: { type: boolean }
+        broken_tiles:
+          type: array
+          items:
+            type: array
+            items: { type: integer }
+            minItems: 2
+            maxItems: 2
+
+    Observation:
+      type: object
+      required: [frame, state, action_count, attempt_num]
+      properties:
+        frame:
+          $ref: "#/components/schemas/Frame"
+        state:
+          $ref: "#/components/schemas/GameState"
+        action_count:
+          type: integer
+        attempt_num:
+          type: integer
+        guid:
+          type: string
+          description: Per-game-instance identifier.
+        score:
+          type: integer
+
+    LevelInfo:
+      type: object
+      required: [level_id, rows, cols]
+      properties:
+        level_id:    { type: string }
+        title:       { type: string }
+        rows:        { type: integer }
+        cols:        { type: integer }
+        has_switches:    { type: boolean }
+        has_teleports:   { type: boolean }
+        has_weak_tiles:  { type: boolean }
+        optimal_solution_length: { type: integer, nullable: true }
+
+    StartOrResetRequest:
+      type: object
+      required: [level_id]
+      properties:
+        level_id:
+          type: string
+          description: e.g. "level0".
+        guid:
+          type: string
+          description: Existing game instance to reset. If omitted, a new instance is created.
+        scorecard_id:
+          type: string
+        seed:
+          type: integer
+          default: 0
+
+    SimpleActionRequest:
+      type: object
+      required: [guid]
+      properties:
+        guid:        { type: string }
+        reasoning:   { type: string, description: Optional model rationale, recorded in JSONL. }
+
+    ScorecardOpenRequest:
+      type: object
+      properties:
+        source_url: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        opaque:
+          type: object
+          additionalProperties: true
+
+    Scorecard:
+      type: object
+      required: [scorecard_id, score, levels]
+      properties:
+        scorecard_id: { type: string }
+        score:        { type: number, format: float }
+        levels:       { type: object, additionalProperties: { type: array, items: { type: object } } }
+        tags:         { type: array, items: { type: string } }
+        source_url:   { type: string }
+        opaque:       { type: object, additionalProperties: true }
+        closed:       { type: boolean }
+
+paths:
+  /commands/start-or-reset:
+    post:
+      summary: Start or reset a level instance
+      description: |
+        Creates a new game session OR resets an existing one. If `guid` is
+        present in the body, the matching instance is reset; otherwise a new
+        instance is created.
+      operationId: startOrReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartOrResetRequest"
+      responses:
+        "200":
+          description: Initial observation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Observation"
+
+  /commands/execute-action-1:
+    post:
+      summary: Execute ACTION 1 (move up)
+      operationId: executeAction1
+      description: Issues `ACTION1` (move up) to the specified game session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SimpleActionRequest" }
+      responses:
+        "200":
+          description: Next observation.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Observation" }
+
+  /commands/execute-action-2:
+    post:
+      summary: Execute ACTION 2 (move down)
+      operationId: executeAction2
+      description: Issues `ACTION2` (move down) to the specified game session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SimpleActionRequest" }
+      responses:
+        "200":
+          description: Next observation.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Observation" }
+
+  /commands/execute-action-3:
+    post:
+      summary: Execute ACTION 3 (move left)
+      operationId: executeAction3
+      description: Issues `ACTION3` (move left) to the specified game session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SimpleActionRequest" }
+      responses:
+        "200":
+          description: Next observation.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Observation" }
+
+  /commands/execute-action-4:
+    post:
+      summary: Execute ACTION 4 (move right)
+      operationId: executeAction4
+      description: Issues `ACTION4` (move right) to the specified game session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SimpleActionRequest" }
+      responses:
+        "200":
+          description: Next observation.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Observation" }
+
+  /commands/execute-action-5:
+    post:
+      summary: Execute ACTION 5 (switch active half)
+      operationId: executeAction5
+      description: |
+        Issues `ACTION5` (switch active half) to the specified game session.
+        In split mode this toggles which half receives subsequent actions.
+        Outside split mode this is a no-op that still costs one action.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SimpleActionRequest" }
+      responses:
+        "200":
+          description: Next observation.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Observation" }
+
+  /levels:
+    get:
+      summary: List available levels
+      operationId: listAvailableLevels
+      description: |
+        Retrieves metadata for every level currently exposed by HLG. Use this
+        endpoint to discover `level_id` values before opening a scorecard or
+        issuing commands.
+      responses:
+        "200":
+          description: Level metadata, ordered by level index.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/LevelInfo" }
+
+  /scorecards/open:
+    post:
+      summary: Open a scorecard
+      operationId: openScorecard
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ScorecardOpenRequest" }
+      responses:
+        "200":
+          description: New scorecard.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Scorecard" }
+
+  /scorecards/{scorecard_id}/close:
+    post:
+      summary: Close a scorecard
+      operationId: closeScorecard
+      parameters:
+        - in: path
+          name: scorecard_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Final scorecard.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Scorecard" }
+
+  /scorecards/{scorecard_id}:
+    get:
+      summary: Retrieve a scorecard
+      operationId: retrieveScorecard
+      parameters:
+        - in: path
+          name: scorecard_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Scorecard contents (open or closed).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Scorecard" }
+
+  /scorecards/{scorecard_id}/levels/{level_id}:
+    get:
+      summary: Retrieve a scorecard limited to one level
+      operationId: retrieveScorecardOneLevel
+      parameters:
+        - in: path
+          name: scorecard_id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: level_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Scorecard with `levels` filtered to the requested level.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Scorecard" }

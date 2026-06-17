@@ -1,0 +1,58 @@
+---
+title: "Available Levels"
+description: "List of HLG levels and how to discover them"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+HLG ships 34 hand-curated Bloxorz levels organized into four subsets. The semi-private set is used for the official frontier-model leaderboard; the fully-private set is reserved for the HLG Challenge.
+
+## Discovering levels programmatically
+
+```python theme={null}
+import hlg
+arc = hlg.Arcade()
+for info in arc.list_levels():
+    print(info.level_id, info.optimal_solution_length, info.has_switches)
+```
+
+## All levels
+
+| Level | Subset | Rows×Cols | Optimal length | Mechanics |
+| ----- | ------ | --------- | -------------- | --------- |
+|  0    | Tutorial     | 10×26      |    8           | plain only |
+|  1    | Public       | 6×17      |    7           | plain only |
+|  2    | Public       | 6×15      |   17           | switches, weak tiles |
+|  3    | Public       | 7×15      |   19           | plain only |
+|  4    | Public       | 9×14      |   28           | weak tiles |
+|  5    | Public       | 9×15      |   33           | switches, weak tiles |
+|  6    | Public       | 10×15      |   35           | plain only |
+|  7    | Public       | 8×15      |   44           | switches |
+|  8    | Public       | 9×15      |   11           | teleports |
+|  9    | Public       | 5×15      |   28           | teleports |
+| 10    | Semi-Private | 10×14      |   65           | switches, teleports, weak tiles |
+| 11    | Semi-Private | 10×12      |   47           | switches, weak tiles |
+| 12    | Semi-Private | 10×13      |   65           | switches |
+| 13    | Semi-Private | 10×14      |   46           | weak tiles |
+| 14    | Semi-Private | 10×14      |   67           | switches |
+| 15    | Semi-Private | 10×15      |   63           | switches, teleports, weak tiles |
+| 16    | Semi-Private | 7×13      |   33           | switches, teleports |
+| 17    | Semi-Private | 10×15      |  106           | switches, weak tiles |
+| 18    | Semi-Private | 9×15      |   85           | switches, weak tiles |
+| 19    | Semi-Private | 10×15      |   67           | switches, weak tiles |
+| 20    | Semi-Private | 10×15      |   60           | switches, teleports, weak tiles |
+| 21    | Semi-Private | 10×15      |   71           | switches |
+| 22    | Semi-Private | 10×14      |   65           | switches, weak tiles |
+| 23    | Semi-Private | 10×15      |   75           | switches, teleports, weak tiles |
+| 24    | Semi-Private | 9×14      |   57           | switches, teleports |
+| 25    | Fully-Private | 11×14      |   55           | switches, weak tiles |
+| 26    | Fully-Private | 9×14      |  110           | switches, teleports, weak tiles |
+| 27    | Fully-Private | 10×15      |   71           | switches, weak tiles |
+| 28    | Fully-Private | 10×15      |  106           | switches, teleports, weak tiles |
+| 29    | Fully-Private | 10×15      |  104           | switches, weak tiles |
+| 30    | Fully-Private | 10×15      |  114           | switches, weak tiles |
+| 31    | Fully-Private | 10×15      |   91           | switches, weak tiles |
+| 32    | Fully-Private | 9×14      |  129           | switches |
+| 33    | Fully-Private | 10×15      |   65           | switches, weak tiles |

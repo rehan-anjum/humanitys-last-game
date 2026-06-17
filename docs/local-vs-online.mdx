@@ -1,0 +1,42 @@
+---
+title: "Local vs Online"
+description: "Playing HLG locally with the engine vs online via the API"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Choose how to run HLG:
+
+<CardGroup cols={2}>
+  <Card title="Local (default in v0.1)" icon="computer" href="#local">
+    Fast, no rate limits, no API key, runs entirely in-process.
+  </Card>
+  <Card title="Online (v0.2)" icon="cloud" href="#online">
+    Remote scorecards, replays, leaderboard submission. Requires API key.
+  </Card>
+</CardGroup>
+
+## Local
+
+Run levels locally via the in-process engine. Recommended for development, iteration, and any agent that does not need shared scorecard infrastructure.
+
+```python theme={null}
+from hlg import Arcade, OperationMode
+
+arc = Arcade(operation_mode=OperationMode.OFFLINE)
+env = arc.make("level0")
+```
+
+`OperationMode.OFFLINE` is the default in v0.1 and the only mode currently supported.
+
+## Online
+
+`OperationMode.ONLINE` is reserved for HLG v0.2. It will let you:
+
+- Submit runs to the official leaderboard.
+- View interactive replays via shareable URLs.
+- Use a hosted endpoint without managing the Python engine yourself.
+
+The REST surface is published in v0.1 as `docs/hlg-openapi.yaml` ([Overview](/rest_overview)) so that integrators can prepare ahead of v0.2.

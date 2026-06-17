@@ -1,0 +1,94 @@
+---
+title: "Level Schema"
+description: "Structure and format of HLG level files"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+Each HLG level lives in `levels/levelN.txt` as plain text.
+
+## File layout
+
+```
+<grid lines>
+----
+<comment lines>
+```
+
+The grid is a top-row-first ASCII representation of the board. Tokens are space-separated. The optional comment section, separated by a line of three or more dashes, describes switch effects and teleport targets.
+
+## Tile tokens
+
+| Token  | Meaning                                                                          |
+| ------ | -------------------------------------------------------------------------------- |
+| `x`    | Missing — block falls; LOSS to land on.                                          |
+| `p`    | Plain — walkable in any orientation.                                             |
+| `s`    | Start — block's initial position; otherwise plain.                               |
+| `e`    | End — WIN by landing UPRIGHT here.                                               |
+| `w`    | Weak — safe lying flat; LOSS if FULL block lands UPRIGHT on it.                  |
+| `W`    | Weak switch — activates on any contact (upright, lying, or split half).          |
+| `S`    | Strong switch — activates only when FULL block is UPRIGHT on it.                 |
+| `t`    | Teleport — re-routes the block when UPRIGHT on it.                               |
+| Suffix | Bridge group: `x1`, `p2`, `S1`, `W3`, `t1`, ... See below.                       |
+
+## Bridge groups
+
+A token's suffix groups it with other tokens. Group state is global per attempt:
+
+- `pN` groups (`p1`, `p2`, ...) start **open** (walkable).
+- `xN` groups (`x1`, `x2`, ...) start **closed** (treated as missing).
+
+A switch activation flips, opens, or closes every tile sharing that group's id.
+
+## Comment grammar
+
+Each comment line wires up one switch or teleport:
+
+```
+<source_id> <action_word> <target_id> [<target_id> ...]
+```
+
+| Action word  | Meaning on each target group                              |
+| ------------ | --------------------------------------------------------- |
+| `toggles`    | Flip current state.                                       |
+| `opens`      | Set to walkable. Permanent for this attempt.              |
+| `closes`     | Set to missing. Permanent and dangerous (can dead-end).   |
+| `teleports`  | When source is triggered, move to a tile of target group. |
+
+If a teleport's `<target_id>` resolves to two tiles, the block splits.
+
+## Worked example: `level2.txt`
+
+```
+x x x x x x x x x x x x x x x
+x p p p p p p p p p p p p p x
+x p s p p p p p p p p p p p x
+x p p p p p p p p p p p p p x
+x x p p p p p p p p p p p e x
+x x x x x x x x x x x x x x x
+```
+
+This level has no switch wiring (no `----` section); it exercises only navigation around the grid boundary and the gap on row 4.
+
+## Worked example: `level33.txt` (excerpt)
+
+```
+...                                                  S1
+----
+S1 opens x1
+W1 closes p2
+W2 closes p2
+...
+```
+
+A single strong switch `S1` opens the closed bridge `x1` (which is the only path forward), but every weak switch on the board (`W1` through `Wc`) **closes** the `p2` bridge that the agent must cross before reaching `S1`. Activating any of them dead-ends the level.
+
+## Loading a level programmatically
+
+```python theme={null}
+from engine.state import load_level
+level = load_level("levels/level33.txt")
+print(level.start_pos, level.end_pos, level.group_initial_open)
+```

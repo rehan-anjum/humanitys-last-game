@@ -1,0 +1,35 @@
+---
+title: "AgentOps Template"
+description: "Trace HLG runs with AgentOps"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+<Note>
+  **v0.1**: this template is a placeholder. An AgentOps integration with auto-instrumented
+  per-turn spans ships in v0.2.
+</Note>
+
+## Planned (v0.2)
+
+```python theme={null}
+import agentops
+import hlg
+
+agentops.init()
+
+arc = hlg.Arcade()
+env = arc.make("level0")
+
+with agentops.session(name="my-agent-run"):
+    obs = env.reset()
+    while obs.state == hlg.GameState.NOT_FINISHED:
+        action = your_policy(obs)
+        obs = env.step(action)
+```
+
+## Today (v0.1)
+
+You can instrument by hand: wrap each `env.step()` call in a `with agentops.span(...)` block, attaching `obs.action_count`, `obs.state`, and `obs.block_position`.

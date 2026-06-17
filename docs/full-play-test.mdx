@@ -1,0 +1,75 @@
+---
+title: "Full Play Test"
+description: "What happens under the hood when running an HLG level"
+---
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://hlg-docs.example.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+This page demonstrates how to interact with the HLG engine directly, end to end. Useful for understanding what happens under the hood when running a level.
+
+<Note>
+  **Recommended approach:** for most use cases use the [HLG Toolkit](/toolkit/minimal),
+  which wraps the engine with a stable API. Direct engine calls are useful for engine
+  development, custom evaluation harnesses, and the paper's reproducibility section.
+</Note>
+
+## Direct engine workflow
+
+```python theme={null}
+from engine.state import load_level, initial_game_state
+from engine.validator import apply_move
+from engine.solver import compute_dead_states, state_key
+from models import Direction, Status
+
+level = load_level("levels/level5.txt")
+state = initial_game_state(level)
+
+# Optional: precompute dead-state set for this level (one-time cost).
+dead = compute_dead_states(level)
+
+for direction in [Direction.RIGHT, Direction.RIGHT, Direction.RIGHT]:
+    result = apply_move(direction, state, level)
+    state = result.next_state
+    if result.status == Status.WIN:
+        print("WIN")
+        break
+    if result.status == Status.LOSS:
+        print("LOSS")
+        break
+    if state_key(state) in dead:
+        print("DEAD — legal move but no winning future")
+        break
+```
+
+## What the SDK adds
+
+The `hlg.Arcade` SDK wraps the workflow above with:
+
+- Automatic dead-state caching across multiple `make()` calls in the same process.
+- Optional ASCII / terminal rendering after every step.
+- A scorecard that aggregates terminal events across one or more levels.
+- A clean `Observation` dataclass instead of bare `GameState`.
+
+## Reproducing a logged run
+
+To replay a run from `logs/`:
+
+```python theme={null}
+import json
+from hlg import Arcade, GameAction
+
+arc = Arcade()
+
+with open("logs/oai-gpt-4.1-2025-04-14_high/level1/run_20260412T132609Z.jsonl") as f:
+    events = [json.loads(line) for line in f]
+
+env = arc.make("level1")
+env.reset()
+for ev in events:
+    if ev["event"] == "turn":
+        obs = env.step(GameAction.from_str(ev["direction"]))
+
+print(obs.state)
+```

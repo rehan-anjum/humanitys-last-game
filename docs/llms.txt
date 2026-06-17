@@ -1,0 +1,69 @@
+# HLG Docs
+
+## Docs
+
+- [Actions](https://hlg-docs.example.dev/actions.md): Input interface for HLG levels
+- [Agents Quickstart](https://hlg-docs.example.dev/agents-quickstart.md): Build AI agents for HLG levels
+- [API Keys](https://hlg-docs.example.dev/api-keys.md): How to get and use your HLG API key (v0.2)
+- [Available Levels](https://hlg-docs.example.dev/available-levels.md): The 34 hand-curated Bloxorz levels
+- [Benchmarking an Agent](https://hlg-docs.example.dev/benchmarking-agent.md): Run repeatable agent evaluations
+- [HLG Changelog](https://hlg-docs.example.dev/changelog.md): Updates and announcements
+- [Contributing](https://hlg-docs.example.dev/contributing.md): Help build and maintain HLG
+- [Create an Agent](https://hlg-docs.example.dev/create-agent.md): Build a custom agent for HLG levels
+- [Feature Requests & Bugs](https://hlg-docs.example.dev/feature-requests.md): Report issues and request features
+- [Full Play Test](https://hlg-docs.example.dev/full-play-test.md): What happens under the hood when running an HLG level
+- [HLG Challenge 2026](https://hlg-docs.example.dev/hlg-challenge-2026.md): The competition surface (planned)
+- [HLG Quickstart](https://hlg-docs.example.dev/index.md): HLG is an agentic spatial-reasoning benchmark of 34 Bloxorz levels
+- [Learn more about HLG](https://hlg-docs.example.dev/hlg.md): Pointer to the paper
+- [Level Schema](https://hlg-docs.example.dev/level-schema.md): Structure and format of HLG level files
+- [LLM Agents](https://hlg-docs.example.dev/llm_agents.md): Language model agents for HLG
+- [Local vs Online](https://hlg-docs.example.dev/local-vs-online.md): Playing HLG locally vs via the API
+- [HLG Scoring Methodology](https://hlg-docs.example.dev/methodology.md): How HLG-RHAE works
+- [Rate Limits](https://hlg-docs.example.dev/rate_limits.md): Limiting RPM for your agents
+- [Recordings & Replays](https://hlg-docs.example.dev/recordings.md): Viewing your agent's gameplay
+- [REST API Overview](https://hlg-docs.example.dev/rest_overview.md): The HLG REST surface
+- [Scorecards](https://hlg-docs.example.dev/scorecards.md): Keeping track of agent performance
+- [Swarms](https://hlg-docs.example.dev/swarms.md): Orchestrate agents across multiple HLG levels
+- [Vocabulary](https://hlg-docs.example.dev/vocabulary.md): Key terms used in HLG documentation
+
+## API Reference
+
+- [Start or reset level instance](https://hlg-docs.example.dev/api-reference/commands/start-or-reset-game-instance.md)
+- [Execute simple action 1 (up)](https://hlg-docs.example.dev/api-reference/commands/execute-simple-action-1.md)
+- [Execute simple action 2 (down)](https://hlg-docs.example.dev/api-reference/commands/execute-simple-action-2.md)
+- [Execute simple action 3 (left)](https://hlg-docs.example.dev/api-reference/commands/execute-simple-action-3.md)
+- [Execute simple action 4 (right)](https://hlg-docs.example.dev/api-reference/commands/execute-simple-action-4.md)
+- [Execute simple action 5 (switch)](https://hlg-docs.example.dev/api-reference/commands/execute-simple-action-5.md)
+- [List available levels](https://hlg-docs.example.dev/api-reference/levels/list-available-levels.md)
+- [Open scorecard](https://hlg-docs.example.dev/api-reference/scorecards/open-scorecard.md)
+- [Close scorecard](https://hlg-docs.example.dev/api-reference/scorecards/close-scorecard.md)
+- [Retrieve scorecard](https://hlg-docs.example.dev/api-reference/scorecards/retrieve-scorecard.md)
+- [Retrieve scorecard (one level)](https://hlg-docs.example.dev/api-reference/scorecards/retrieve-scorecard-one-level.md)
+
+## Toolkit
+
+- [HLG Toolkit Quickstart](https://hlg-docs.example.dev/toolkit/overview.md)
+- [Sample HLG Toolkit Agent](https://hlg-docs.example.dev/toolkit/minimal.md)
+- [Arcade](https://hlg-docs.example.dev/toolkit/hlg.md)
+- [EnvironmentWrapper](https://hlg-docs.example.dev/toolkit/environment_wrapper.md)
+- [List Levels](https://hlg-docs.example.dev/toolkit/list-games.md)
+- [List Available Actions](https://hlg-docs.example.dev/toolkit/list-actions.md)
+- [Submit Action](https://hlg-docs.example.dev/toolkit/submit-action.md)
+- [Render Levels](https://hlg-docs.example.dev/toolkit/render-games.md)
+- [Create Scorecard](https://hlg-docs.example.dev/toolkit/create-scorecard.md)
+- [Get Scorecard](https://hlg-docs.example.dev/toolkit/get-scorecard.md)
+- [Close Scorecard](https://hlg-docs.example.dev/toolkit/close-scorecard.md)
+- [Listen and Serve](https://hlg-docs.example.dev/toolkit/listen_and_serve.md)
+- [Competition Mode](https://hlg-docs.example.dev/toolkit/competition_mode.md)
+
+## Partner Templates
+
+- [Anthropic Template](https://hlg-docs.example.dev/partner_templates/anthropic.md)
+- [OpenAI Template](https://hlg-docs.example.dev/partner_templates/openai.md)
+- [HuggingFace Template](https://hlg-docs.example.dev/partner_templates/huggingface.md)
+- [LangChain Template](https://hlg-docs.example.dev/partner_templates/langchain.md)
+- [AgentOps Template](https://hlg-docs.example.dev/partner_templates/agentops.md)
+
+## OpenAPI Specs
+
+- [hlg-openapi](https://hlg-docs.example.dev/hlg-openapi.yaml)
