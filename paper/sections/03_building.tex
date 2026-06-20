@@ -6,12 +6,29 @@
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.95\linewidth]{../Bloxorz_design.jpg}
+    \begin{tikzpicture}[
+        node distance=1.1cm and 1.4cm,
+        box/.style={draw, rounded corners=2pt, align=center, minimum width=2.6cm,
+                    minimum height=0.85cm, font=\small},
+        arrow/.style={-{Stealth[length=2mm]}, thick},
+    ]
+        \node[box] (agent) {LLM agent\\(turn / one-shot)};
+        \node[box, right=of agent] (driver) {Eval driver\\\texttt{main.py}};
+        \node[box, right=of driver] (validator) {Engine validator\\\texttt{OK}/\texttt{LOSS}/\texttt{WIN}};
+        \node[box, below=of validator] (solver) {Dead-state BFS\\\texttt{engine/solver.py}};
+        \node[box, below=of driver] (logger) {JSONL logger\\\texttt{agent\_logger.py}};
+
+        \draw[arrow] (agent) -- node[above, font=\scriptsize]{move} (driver);
+        \draw[arrow] (driver) -- node[above, font=\scriptsize]{apply} (validator);
+        \draw[arrow] (validator) -- node[right, font=\scriptsize]{next state} (driver);
+        \draw[arrow] (driver) -- node[left, font=\scriptsize]{events} (logger);
+        \draw[arrow, dashed] (solver) -- node[above, font=\scriptsize]{post-move lookup} (driver);
+    \end{tikzpicture}
     \caption{HLG system architecture. The main loop consults the agent each turn,
     receives a proposed move, and forwards it to the game engine's validator, which
     returns the next state and an \texttt{OK}/\texttt{LOSS}/\texttt{WIN} status. Logged
     events flow through observability into JSONL traces. Dead-state detection runs as
-    an offline BFS pass per level (top-right) and is consulted post-move; it does
+    an offline BFS pass per level (bottom-right) and is consulted post-move; it does
     \emph{not} live inline in the validator.}
     \label{fig:arch}
 \end{figure}
