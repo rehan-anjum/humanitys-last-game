@@ -27,7 +27,7 @@ Humanity's Last Game (HLG) is an agentic spatial-reasoning benchmark of 34 hand-
 | `simulate.py` | Interactive single-level player. |
 | `verify_solutions.py` | Replays known-optimal solutions for every level (oracle). |
 | `hlg/` | **Public Python SDK** mirroring ARC's `arc_agi.Arcade` shape. |
-| `docs/` | Mintlify documentation site. |
+| `docs/` | Tangly static docs site (Mintlify-compatible MDX); deploys to GitHub Pages. |
 | `docs/_templates/` | Reference ARC docs `.md` companions, gitignored. Regenerate with `scripts/scrape_arc_templates.py`. |
 | `paper/` | LaTeX research paper (arxiv style). |
 | `data/` | Generated artifacts: `leaderboard.json`, `solutions.json`, `human_baseline.json`. |
@@ -43,10 +43,11 @@ Humanity's Last Game (HLG) is an agentic spatial-reasoning benchmark of 34 hand-
 5. **Logger schema** is the contract for the `data/leaderboard.json` build. The 8 event types (`level_start`, `level_end`, `attempt_start`, `attempt_end`, `attempt_plan`, `turn`, `dead_state`, `move_error`) are documented on `/recordings`. Do not rename or reorder fields without bumping a version.
 6. **Scoring** is HLG-RHAE: `S_l = min(1.15, h_l/a_l)^2` per level, linear weights `w_l = l`, environment cap by completed-level fraction. Same shape as ARC's RHAE. Implementation: `scripts/compute_rhae.py`.
 7. **Paper accuracy**. Section 3 of `paper/sections/03_building.tex` must accurately describe the engine: dead states post-move via solver, NOT inline in validator. Section 5 must explicitly disclose that human-baseline trials have not been run; v0.1 uses optimal length as `h_l` proxy.
-8. **Mintlify components**. The site uses `<CardGroup cols={N}>`, `<Card icon=... href=...>`, `<Note>`, `<Steps>`, code blocks tagged `theme={null}`, and the `> ## Documentation Index` blockquote at the top of every page. Mirror these exactly.
-9. **Package manager** in all docs samples is `uv`. Match ARC's convention.
-10. **No emojis** in code, commits, or PRs.
-11. **No Cursor attribution** in commits, PRs, or trailers.
+8. **Docs hosting**. The public site is static HTML built with Tangly and deployed to GitHub Pages (`.github/workflows/deploy-docs.yml`). Do not add Mintlify-only hosting assumptions to user-facing docs.
+9. **Mintlify-compatible components**. The site uses `<CardGroup cols={N}>`, `<Card icon=... href=...>`, `<Note>`, `<Steps>`, code blocks tagged `theme={null}`, and the `> ## Documentation Index` blockquote at the top of every page. Mirror these exactly (rendered by Tangly).
+10. **Package manager** in all docs samples is `uv`. Match ARC's convention.
+11. **No emojis** in code, commits, or PRs.
+12. **No Cursor attribution** in commits, PRs, or trailers.
 
 ## Forbidden
 

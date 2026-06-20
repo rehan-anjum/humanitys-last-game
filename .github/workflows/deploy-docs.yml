@@ -1,0 +1,60 @@
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install docs dependencies
+        working-directory: docs
+        run: bun install --frozen-lockfile || bun install
+
+      - name: Build static site
+        working-directory: docs
+        env:
+          DOCS_CUSTOM_DOMAIN: ${{ vars.DOCS_CUSTOM_DOMAIN }}
+        run: |
+          REPO="${{ github.repository }}"
+          # Org/user site repo (humanitys-last-game.github.io) serves at domain root.
+          if [ -n "$DOCS_CUSTOM_DOMAIN" ] || [ "$REPO" = "humanitys-last-game/humanitys-last-game.github.io" ]; then
+            bun run build:domain
+            if [ -n "$DOCS_CUSTOM_DOMAIN" ]; then
+              echo "$DOCS_CUSTOM_DOMAIN" > dist/CNAME
+            fi
+          else
+            # Fallback while repo still lives under a personal account / project path.
+            bun run build:pages
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

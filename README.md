@@ -10,7 +10,7 @@ distinguishing dead states from losses, learning from failure across attempts,
 cross-level transfer, two distinct planning regimes (closed-loop vs open-loop),
 and token efficiency.
 
-- **Documentation**: [`docs/`](./docs) — Mintlify site mirroring the ARC docs structure.
+- **Documentation**: [`docs/`](./docs) — static site (Tangly) deployed to GitHub Pages; see [Hosting the docs](#hosting-the-docs).
 - **Research paper**: [`paper/`](./paper) — LaTeX, arxiv-style, 9 sections.
 - **Python SDK**: [`hlg/`](./hlg) — `Arcade`, `EnvironmentWrapper`, `GameAction`, `Scorecard`.
 - **Engine**: [`engine/`](./engine) — pure Python: state, validator, dead-state BFS.
@@ -48,6 +48,34 @@ uv run python scripts/build_paper_assets.py      # paper figures + tables
 uv run python scripts/build_logos.py             # docs/images/*
 make -C paper                                    # paper.pdf
 ```
+
+## Hosting the docs
+
+The docs site is built with [Tangly](https://tangly.dev) and deployed to **GitHub Pages** via `.github/workflows/deploy-docs.yml`.
+
+**Target URL (org site):** `https://humanitys-last-game.github.io`
+
+### One-time org setup
+
+GitHub org creation requires the web UI. Then run:
+
+```bash
+./scripts/setup_github_org.sh
+```
+
+Manual checklist:
+
+1. Create org at [github.com/account/organizations/new](https://github.com/account/organizations/new) — name: **`humanitys-last-game`**
+2. Transfer `vats98754/humanitys-last-game` into the org
+3. Rename the repo to **`humanitys-last-game.github.io`**
+4. **Settings → Pages → Source: GitHub Actions**
+5. Push `main`
+
+Until transfer/rename completes, the workflow serves project Pages at `vats98754.github.io/humanitys-last-game`.
+
+**Local preview:** `cd docs && bun install && bun run dev`
+
+**Optional custom domain:** set repo variable `DOCS_CUSTOM_DOMAIN`, update `siteUrl` in `docs/docs.json`, DNS CNAME → `humanitys-last-game.github.io`.
 
 ## Repository conventions
 

@@ -1,0 +1,15 @@
+{
+  "name": "hlg-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tangly dev",
+    "build": "tangly build",
+    "build:pages": "tangly build --base /humanitys-last-game",
+    "build:domain": "tangly build --base /",
+    "check": "tangly check --strict"
+  },
+  "devDependencies": {
+    "tangly": "latest"
+  }
+}

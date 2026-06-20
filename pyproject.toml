@@ -37,7 +37,7 @@ figures = [
 
 [project.urls]
 Homepage = "https://github.com/vats98754/humanitys-last-game"
-Documentation = "https://hlg-docs.example.dev"
+Documentation = "https://humanitys-last-game.github.io"
 Repository = "https://github.com/vats98754/humanitys-last-game"
 "Bug Tracker" = "https://github.com/vats98754/humanitys-last-game/issues"
 

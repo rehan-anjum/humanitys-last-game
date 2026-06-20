@@ -22,7 +22,10 @@ paper/*.synctex.gz
 paper/sections/*.aux
 paper/main.pdf
 
-# Mintlify local preview cache
+# Mintlify local preview cache (legacy; docs now build with Tangly)
 docs/.mintlify/
 docs/.next/
+docs/dist/
+docs/node_modules/
+docs/.tangly/
 node_modules/

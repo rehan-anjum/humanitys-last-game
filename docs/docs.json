@@ -1,7 +1,8 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "$schema": "https://tangly.dev/schema/docs.json",
+  "theme": "tang",
   "name": "HLG Docs",
+  "siteUrl": "https://humanitys-last-game.github.io",
   "colors": {
     "primary": "#7C3AED",
     "light": "#A78BFA",
@@ -153,7 +154,7 @@
       "anchors": [
         {
           "anchor": "GitHub",
-          "href": "https://github.com/vats98754/humanitys-last-game",
+          "href": "https://github.com/humanitys-last-game/humanitys-last-game.github.io",
           "icon": "github"
         },
         {
@@ -177,17 +178,17 @@
     ],
     "primary": {
       "type": "github",
-      "href": "https://github.com/vats98754/humanitys-last-game"
+      "href": "https://github.com/humanitys-last-game/humanitys-last-game.github.io"
     }
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/vats98754/humanitys-last-game",
+      "github": "https://github.com/humanitys-last-game/humanitys-last-game.github.io",
       "x": "https://x.com/vats98754"
     }
   },
   "api": {
-    "openapi": ["docs/hlg-openapi.yaml"],
+    "openapi": ["hlg-openapi.yaml"],
     "playground": {
       "display": "interactive"
     }
